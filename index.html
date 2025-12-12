@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ポロ蒼 | Polo Aoi</title>
     <style>
-        /* --- 1. 全局与变量 --- */
+        /* --- 1. 全局配置 --- */
         :root {
             --primary: #0044cc;      /* 克莱因蓝 */
             --bg-color: #ffffff;
@@ -14,61 +14,22 @@
             --line-color: #f0f0f0;
         }
 
-        body { 
-            margin: 0; padding: 0; 
-            background-color: var(--bg-color);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            color: var(--text-main);
-            line-height: 1.8;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-        }
+        body { margin: 0; padding: 0; background-color: var(--bg-color); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: var(--text-main); line-height: 1.8; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
 
-        /* --- 2. 封面区 --- */
+        /* --- 2. 封面与头像 --- */
         .header { margin-bottom: 60px; position: relative; }
-        .cover-image { 
-            width: 100%; 
-            height: 380px; /* 电脑端高度稍微加高一点，更美观 */
-            object-fit: cover; 
-            background-color: #f0f5ff; 
-            transition: height 0.3s;
-        }
-        
+        .cover-image { width: 100%; height: 380px; object-fit: cover; background-color: #f0f5ff; transition: height 0.3s; }
         .user-wrapper { max-width: 700px; margin: 0 auto; position: relative; padding: 0 20px; }
-        
-        .user-info { 
-            margin-top: -60px; /* 电脑端：让头像上浮多一点 */
-            display: flex; 
-            align-items: flex-end; 
-            position: relative; 
-            z-index: 10; 
-        }
-        .avatar { 
-            width: 120px; height: 120px; 
-            border-radius: 50%; 
-            border: 5px solid var(--bg-color); 
-            object-fit: cover; 
-            background-color: #eee; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* 加一点阴影更有质感 */
-        }
+        .user-info { margin-top: -60px; display: flex; align-items: flex-end; position: relative; z-index: 10; }
+        .avatar { width: 120px; height: 120px; border-radius: 50%; border: 5px solid var(--bg-color); object-fit: cover; background-color: #eee; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .user-text { margin-left: 25px; margin-bottom: 10px; }
         .user-name { font-size: 28px; font-weight: 800; color: #000; letter-spacing: -0.5px; }
         .user-desc { font-size: 13px; color: var(--text-light); margin-top: 4px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
 
-        /* --- 3. 布局与容器 --- */
+        /* --- 3. 布局与搜索 --- */
         .container { max-width: 700px; margin: 0 auto; padding: 0 20px; padding-bottom: 100px; }
-        
-        /* --- 3.5 搜索栏 --- */
         .search-wrapper { margin-bottom: 40px; position: relative; }
-        .search-input {
-            width: 100%;
-            padding: 15px 25px 15px 50px;
-            border: none; border-radius: 50px;
-            background-color: #f8f9fa; font-size: 16px; color: #333;
-            outline: none; transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-            box-sizing: border-box; -webkit-appearance: none;
-        }
+        .search-input { width: 100%; padding: 15px 25px 15px 50px; border: none; border-radius: 50px; background-color: #f8f9fa; font-size: 16px; color: #333; outline: none; transition: all 0.3s ease; box-shadow: 0 2px 10px rgba(0,0,0,0.03); box-sizing: border-box; -webkit-appearance: none; }
         .search-input:focus { background-color: #fff; box-shadow: 0 5px 20px rgba(0, 68, 204, 0.15); }
         .search-icon { position: absolute; top: 50%; left: 20px; transform: translateY(-50%); width: 14px; height: 14px; border: 2px solid #ccc; border-radius: 50%; pointer-events: none; }
         .search-icon::after { content: ''; position: absolute; top: 10px; left: 10px; width: 5px; height: 2px; background-color: #ccc; transform: rotate(45deg); }
@@ -76,137 +37,111 @@
         .search-input:focus ~ .search-icon::after { background-color: var(--primary); }
 
         /* --- 4. 列表卡片 --- */
-        .post-card { margin-bottom: 60px; cursor: pointer; }
+        .post-card { margin-bottom: 60px; cursor: pointer; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .post-card:active { opacity: 0.8; }
         .post-meta { font-size: 12px; color: var(--text-light); font-family: Georgia, serif; font-style: italic; margin-bottom: 8px;}
         .post-title { font-size: 22px; font-weight: 700; margin: 0 0 10px 0; line-height: 1.4; transition: color 0.2s; color: #000;}
         .post-card:hover .post-title { color: var(--primary); }
         .post-excerpt { font-size: 15px; color: #666; line-height: 1.6; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        .post-cover-thumb { width: 100%; height: 240px; object-fit: cover; border-radius: 4px; margin-bottom: 15px; background-color: #f8f8f8;}
+        /* 列表里的缩略图：保持原样，不用太大 */
+        .post-cover-thumb { width: 100%; height: 240px; object-fit: cover; border-radius: 4px; margin-bottom: 15px; background-color: #f8f8f8; display: block; }
         .read-more-btn { color: var(--primary); font-size: 14px; font-weight: 600; text-decoration: none; border-bottom: 1px solid transparent; }
         .read-more-btn:hover { border-bottom-color: var(--primary); }
 
-        /* --- 5. 阅读器视图 --- */
+        /* --- 5. 阅读器 --- */
         #article-reader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 100; overflow-y: auto; animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .reader-nav { max-width: 700px; margin: 0 auto; padding: 20px; position: sticky; top: 0; background: rgba(255,255,255,0.95); border-bottom: 1px solid var(--line-color); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); }
         .back-btn { border: none; background: none; font-size: 16px; cursor: pointer; color: var(--text-main); display: flex; align-items: center; }
         .back-btn::before { content: '←'; margin-right: 8px; font-size: 20px; }
+        
+        /* ⚠️ 核心修复区：这里的类名改成了 .reader-content，确保和下面 HTML 对应 */
         .reader-content { max-width: 680px; margin: 40px auto; padding: 0 20px 100px; }
 
-        /* --- 6. 文章排版 --- */
-        .article-body h1 { font-size: 30px; margin-bottom: 10px; line-height: 1.3; }
-        .article-body .meta { color: var(--text-light); font-size: 14px; margin-bottom: 30px; border-bottom: 1px solid var(--line-color); padding-bottom: 20px; }
-        .article-body h2 { font-size: 20px; margin-top: 40px; margin-bottom: 15px; color: #000; position: relative; padding-left: 12px; }
-        .article-body h2::before { content: ''; position: absolute; left: 0; top: 5px; height: 18px; width: 3px; background: var(--primary); }
-        .article-body p { font-size: 17px; line-height: 1.8; margin-bottom: 20px; color: #333; text-align: justify; }
-        .article-body img { width: 100%; height: auto; margin: 15px 0; border-radius: 4px; }
-        .article-body blockquote { border-left: 3px solid var(--primary); margin: 25px 0; padding: 10px 15px; background: #f9faff; color: #555; font-style: italic; font-size: 15px; }
-
-        /* =========================================
-           📱 移动端 专属优化 (已修复重叠问题)
-           ========================================= */
-        @media screen and (max-width: 768px) {
-            /* 1. 封面变矮，留出空间 */
-            .header { margin-bottom: 30px; }
-            .cover-image { height: 200px; } 
-
-            /* 2. 🔴 关键修复：改为垂直居中布局 */
-            .user-info { 
-                margin-top: -50px; /* 头像上浮，压住一半图片 */
-                flex-direction: column; /* 垂直排列 */
-                align-items: center;    /* 居中对齐 */
-                text-align: center;     /* 文字居中 */
-            }
-
-            /* 3. 头像样式调整 */
-            .avatar { 
-                width: 100px; height: 100px; 
-                border-width: 4px; 
-                margin-bottom: 15px; /* 头像和名字的距离 */
-            }
-
-            /* 4. 名字样式调整 */
-            .user-text { 
-                margin-left: 0; /* 去掉左边距 */
-                margin-bottom: 10px;
-            }
-            .user-name { font-size: 24px; }
-            
-            /* 其他优化 */
-            .container { padding: 0 15px 80px; }
-            .post-card { margin-bottom: 40px; }
-            .post-cover-thumb { height: 180px; }
+        /* 文章大标题 H1 */
+        .reader-content h1 { 
+            font-size: 30px; 
+            margin-bottom: 10px; 
+            line-height: 1.3; 
+            color: var(--primary); /* 🔵 强制蓝色 */
+        }
+        
+        .reader-content .meta { color: var(--text-light); font-size: 14px; margin-bottom: 30px; border-bottom: 1px solid var(--line-color); padding-bottom: 20px; }
+        
+        /* 文章小标题 H2 */
+        .reader-content h2 { 
+            font-size: 20px; 
+            margin-top: 40px; 
+            margin-bottom: 15px; 
+            color: var(--primary); /* 🔵 强制蓝色 */
+            position: relative; 
+            padding-left: 12px; 
+        }
+        .reader-content h2::before { content: ''; position: absolute; left: 0; top: 5px; height: 18px; width: 3px; background: var(--primary); }
+        
+        .reader-content p { font-size: 17px; line-height: 1.8; margin-bottom: 20px; color: #333; text-align: justify; }
+        
+        /* 🖼️ 图片尺寸优化 (短边逻辑) */
+        .reader-content img { 
+            display: block;
+            margin: 20px auto;  /* 居中 */
+            max-width: 100%;    /* 宽度不超过屏幕 */
+            max-height: 600px;  /* 🔴 高度限制：不管多长的图，最高600px */
+            width: auto;        /* 宽度自动，保持比例 */
+            height: auto;       /* 高度自动 */
+            border-radius: 4px; 
+            object-fit: contain; /* 保证图片完整显示不被裁剪 */
+        }
+        
+        /* 引用块 Blockquote */
+        .reader-content blockquote { 
+            border-left: 4px solid var(--primary); /* 🔵 蓝色左边框 */
+            margin: 25px 0; 
+            padding: 15px 20px; 
+            background: #f0f5ff; /* 极淡蓝背景 */
+            color: #555; 
+            font-style: italic; 
+            font-size: 15px; 
+            border-radius: 0 4px 4px 0;
         }
 
-        #hidden-posts-source { display: none; }
+        /* 移动端适配 */
+        @media screen and (max-width: 768px) {
+            .header { margin-bottom: 30px; }
+            .cover-image { height: 200px; } 
+            .user-info { margin-top: -50px; flex-direction: column; align-items: center; text-align: center; }
+            .avatar { width: 100px; height: 100px; border-width: 4px; margin-bottom: 15px; }
+            .user-text { margin-left: 0; margin-bottom: 10px; }
+            .user-name { font-size: 24px; }
+            .container { padding: 0 15px 80px; }
+            .post-card { margin-bottom: 40px; }
+            /* 手机上图片高度限制稍微小一点，防刷屏 */
+            .reader-content img { max-height: 400px; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="home-view">
-        <div class="header">
-            <img src="images/cover.jpg" class="cover-image" onerror="this.src='https://images.unsplash.com/photo-1516669929559-867175498845?w=1600'">
-            <div class="user-wrapper">
-                <div class="user-info">
-                    <img src="images/avatar.jpg" class="avatar" onerror="this.src='https://api.dicebear.com/7.x/notionists/svg?seed=Felix'">
-                    <div class="user-text">
-                        <div class="user-name">ポロ蒼</div>
-                        <div class="user-desc">Blue / Photography / Minimalist</div>
-                    </div>
+    <div class="header">
+        <img src="images/cover.jpg" class="cover-image" onerror="this.src='https://images.unsplash.com/photo-1516669929559-867175498845?w=1600'">
+        <div class="user-wrapper">
+            <div class="user-info">
+                <img src="images/avatar.jpg" class="avatar" onerror="this.src='https://api.dicebear.com/7.x/notionists/svg?seed=Felix'">
+                <div class="user-text">
+                    <div class="user-name">ポロ蒼</div>
+                    <div class="user-desc">Blue / Photography / Minimalist</div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="container">
-            <div class="search-wrapper">
-                <input type="text" id="searchInput" class="search-input" placeholder="Search..." onkeyup="filterPosts()">
-                <div class="search-icon"></div>
-            </div>
-
-            <div id="posts-list">
-                
-                <div class="post-card" onclick="openArticle('post-1')">
-                    <div class="post-meta">Dec 11, 2025</div>
-                    <h3 class="post-title">为什么我选择了极简主义：关于蓝色的思考</h3>
-                    <img src="images/photo1.jpg" class="post-cover-thumb" onerror="this.src='https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=800'">
-                    <div class="post-excerpt">
-                        蓝色是天空的深度，也是大海的静谧。在设计这个网站时，我刻意去掉了多余的边框和装饰... (点击阅读全文)
-                    </div>
-                    <span class="read-more-btn">Read Article</span>
-                </div>
-
-                <div class="post-card" onclick="openArticle('post-2')">
-                    <div class="post-meta">Dec 10, 2025</div>
-                    <h3 class="post-title">如何用 VS Code 搭建个人博客</h3>
-                    <div class="post-excerpt">
-                        不需要复杂的服务器，只需要一个 GitHub 账号和 VS Code，你就能拥有属于自己的角落...
-                    </div>
-                    <span class="read-more-btn">Read Article</span>
-                </div>
-
-                <div class="post-card" onclick="openArticle('post-3')">
-                    <div class="post-meta">Dec 11, 2025</div>
-                    <h3 class="post-title">OMG</h3>
-                    <img src="images/photo2.jpg" class="post-cover-thumb">
-                    <div class="post-excerpt">
-                        惹毛女人你只需要这么做
-                    </div>
-                    <span class="read-more-btn">Read Article</span>
-                </div>
-
-                <div class="post-card" onclick="openArticle('post-4')">
-                    <div class="post-meta">Dec 12, 2025</div>
-                    <h3 class="post-title">更新日志</h3>
-                    <img src="images/251212.jpg" class="post-cover-thumb" onerror="this.src='images/photo2.jpg'">
-                    <div class="post-excerpt">
-                        添加小小的想法，网站变得越来越像那么回事了
-                    </div>
-                    <span class="read-more-btn">Read Article</span>
-                </div>
-
-            </div>
+    <div class="container">
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search..." oninput="handleSearch()">
+            <div class="search-icon"></div>
         </div>
+        <div id="posts-container"></div>
     </div>
 
     <div id="article-reader">
@@ -214,118 +149,166 @@
             <button class="back-btn" onclick="closeArticle()">Back to Home</button>
             <span style="font-weight:bold; color:var(--primary);">ポロ蒼</span>
         </div>
-        <div class="reader-content" id="reader-body">
-            </div>
-    </div>
-
-    <div id="hidden-posts-source">
-
-        <article id="post-1">
-            <div class="article-body">
-                <h1>为什么我选择了极简主义：关于蓝色的思考</h1>
-                <div class="meta">Published on Dec 11, 2025</div>
-                <p>蓝色是天空的深度，也是大海的静谧。更新了网站的设计，去掉了多余的线条，只保留内容本身。</p>
-                <img src="images/photo1.jpg" >
-                <h2>少即是多 (Less is More)</h2>
-                <p>在信息爆炸的时代，我们每天接收太多的噪音。我希望这个个人网站能像一个安静的避风港。</p>
-                <blockquote>"完美不是在没有什么可以添加的时候达到的，而是在没有什么可以去掉的时候达到的。" <br> 
-                    ------圣埃克苏佩里</blockquote>
-                <h2>关于色彩的选择</h2>
-                <p>克莱因蓝（Klein Blue）有一种纯粹的冲击力。我将其作为网站的主色调，配合大量的白色留白，创造出一种可以在呼吸的空间。</p>
-            </div>
-        </article>
-
-        <article id="post-2">
-            <div class="article-body">
-                <h1>如何用 VS Code 搭建个人博客</h1>
-                <div class="meta">Published on Dec 10, 2025</div>
-                <p>这是一个测试文章。你可以在这里写很长的内容。</p>
-                <h2>第一步：准备工作</h2>
-                <p>下载 VS Code，安装 Live Server 插件。</p>
-                <h2>第二步：编写 HTML</h2>
-                <p>使用语义化的标签，让网页结构清晰。</p>
-            </div>
-        </article>
-
-        <article id="post-3"> 
-            <div class="article-body">
-                <h1>只要这样</h1>
-                <div class="meta">2025.12.11</div>
-                <p>然后这样</p>
-                <h2>最后</h2>
-                <p>就惹毛了</p>
-                <img src="images/photo6.jpg" >
-                <img src="images/photo5.jpg" >
-                <img src="images/photo2.jpg" >
-                <blockquote>
-                    雨は いつか止むのでしょうか ずいぶん長い間 冷たい，<br>
-                    ------这雨是否终有一天将会停下 它已冰冷地下了太长太久。
-                </blockquote>
-            </div>
-        </article>
-
-        <article id="post-4"> 
-            <div class="article-body">
-                <h1>更新日志</h1>
-                <div class="meta">2025.12.12</div>
-                <p>发现日期不会自动排序，以及缺少搜索功能</p>
-                <h2>立马安排ai更新</h2>
-                <p>gemini二话不说半分钟给我写好了，现在文章可以优雅的排序，同时带来清爽的搜索体验</p>
-                <blockquote>
-                    感谢先进的ai让代码零基础的我也能创造自己的网站<br>
-                    ------アオイ
-                </blockquote>
-            </div>
-        </article>
-
+        <div class="reader-content" id="reader-body"></div>
     </div>
 
     <script>
-        window.onload = function() {
-            sortPostsByDate();
-        };
+        const blogData = [
+            {
+                id: "post-4",
+                title: "更新日志 v2.0",
+                date: "Dec 12, 2025",
+                cover: "images/251212.jpg", 
+                desc: "添加小小的想法，网站变得越来越像那么回事了",
+                content: `
+                    <h1>网站架构升级日志 v2.0</h1>
+                    <div class="meta">Published on Dec 12, 2025</div>
+                    <p>为了追求极致的性能与极简的维护体验，我对个人网站的底层架构进行了“降维打击”式的重构。</p>
+                    <h2>1. 架构重构：数据驱动 (Data-Driven)</h2>
+                    <p>放弃了传统的 HTML 硬编码模式，构建了基于 JSON 的数据层。现在，视图（View）与数据（Data）完全分离，新增文章只需配置数据，渲染引擎会自动生成精美的卡片。</p>
+                    <h2>2. 性能优化：懒加载 (Lazy Loading)</h2>
+                    <p>引入了 <code>loading="lazy"</code> 机制。图片资源按需加载，大幅降低了首屏网络请求，让移动端浏览体验如丝般顺滑。</p>
+                    <h2>3. 视觉系统：全局变量 (CSS Variables)</h2>
+                    <p>使用 CSS 变量构建了原子化的设计系统。将“克莱因蓝”与“留白”定义为全局参数，确保了全站视觉语言的高度统一与可扩展性。</p>
+                    <h2>4. 逻辑增强：自动化 (Automation)</h2>
+                    <p>重写了 JavaScript 逻辑内核，实现了基于时间戳的<b>自动排序</b>与毫秒级的<b>全文检索</b>功能。让机器去处理逻辑，让人专注于创作。</p>
+                    <blockquote> "Code is poetry, and simplicity is the ultimate sophistication." <br> —— 代码即诗，极简即是终极的高级。</blockquote>
 
-        function sortPostsByDate() {
-            const list = document.getElementById('posts-list');
-            const cards = Array.from(list.getElementsByClassName('post-card'));
-            cards.sort((a, b) => {
-                const dateA = new Date(a.querySelector('.post-meta').innerText);
-                const dateB = new Date(b.querySelector('.post-meta').innerText);
-                return dateB - dateA;
-            });
-            cards.forEach(card => list.appendChild(card));
+                `
+            },
+            {
+                id: "post-3",
+                title: "OMG",
+                date: "Dec 11, 2025",
+                cover: "images/photo2.jpg",
+                desc: "惹毛女人你只需要这么做",
+                content: `
+                    <h1>只要这样</h1>
+                    <div class="meta">Published on Dec 11, 2025</div>
+                    <p>然后这样</p>
+                    <h2>最后</h2>
+                    <p>就惹毛了</p>
+                    <img src="images/photo6.jpg" onerror="this.src='images/photo2.jpg'">
+                    <img src="images/photo5.jpg" onerror="this.src='images/photo2.jpg'">
+                    <blockquote>雨は いつか止むのでしょうか ずいぶん長い間 冷たい，<br>------这雨是否终有一天将会停下 它已冰冷地下了太长太久。</blockquote>
+                `
+            },
+            {
+                id: "post-1",
+                title: "为什么我选择了极简主义：关于蓝色的思考",
+                date: "Dec 11, 2025",
+                cover: "images/photo1.jpg",
+                desc: "蓝色是天空的深度，也是大海的静谧。在设计这个网站时，我刻意去掉了多余的边框和装饰...",
+                content: `
+                    <h1>为什么我选择了极简主义</h1>
+                    <div class="meta">Published on Dec 11, 2025</div>
+                    <p>蓝色是天空的深度，也是大海的静谧。更新了网站的设计，去掉了多余的线条，只保留内容本身。</p>
+                    <img src="images/photo1.jpg">
+                    <h2>少即是多 (Less is More)</h2>
+                    <p>在信息爆炸的时代，我们每天接收太多的噪音。我希望这个个人网站能像一个安静的避风港。</p>
+                    <blockquote>"完美不是在没有什么可以添加的时候达到的，而是在没有什么可以去掉的时候达到的。" <br> ------圣埃克苏佩里</blockquote>
+                `
+            },
+            {
+                id: "post-2",
+                title: "如何用 VS Code 搭建个人博客",
+                date: "Dec 10, 2025",
+                cover: "", 
+                desc: "不需要复杂的服务器，只需要一个 GitHub 账号和 VS Code，你就能拥有属于自己的角落...",
+                content: `
+                    <h1>如何用 VS Code 搭建个人博客</h1>
+                    <div class="meta">Published on Dec 10, 2025</div>
+                    <p>这是一个测试文章。你可以在这里写很长的内容。</p>
+                    <h2>第一步：准备工作</h2>
+                    <p>下载 VS Code，安装 Live Server 插件。</p>
+                `
+            },
+            {
+                id: "post-5",
+                title: "如何利用AI制作个人网站",
+                date: "Dec 12, 2025",
+                cover: "", 
+                desc: "不需会很很多操作，只需有想法有灵感，用好AI工具...",
+                content: `
+                    <h1>用AI制作个人网站</h1>
+                    <div class="meta">Published on Dec 12, 2025</div>
+                    <p>我制作网站这个念头，源于刷短视频提供的灵感，我惊叹ai已经进化到这种地步了，自己来尝试一下。</p>
+                    <h2>整理自我期望</h2>
+                    <p>把网站的用途、功能、风格想好，告诉ai直接让它生成</p>
+                    <h2>在实践中学习</h2>
+                    <p>回想自己从前使用工具的逻辑是怎么样的，比如说我想使用PS修图，我得先下软件，再从bilibili找一个入门教程，系统性的学完入门篇，然后再去尝试使用PS这个工具。是先系统系学习，学完再用的逻辑。</p>
+                    <p>但是随着年龄增加，不再是有闲工夫的学生了，业余时间和学习精力也大大降低，外加我对编程入门颇感困难，我暂时不考虑系统性学习编程了<p>
+                    <p>现在做的就是边干边学，先完成自己期望。ai生成后它会告诉我怎么样把这个网站上传，要注册github账号，下载vs code编写代码。说起来简单期间也是困难重重，我照着ai的教程我不一定做对，一旦遇到问题我就会把问题反馈给ai，截图也好拍照也好，上传给ai等到识别后，ai会分析我遇到的问题，我有何操作失误，有时候ai的描述我实在读不懂，那我就再简单上网查一下，看看有没有图文视频等解答，算是使用传统工具了哈哈，这么一顿操作下来，一路上遇到的问题迎刃而解。我还有个杀手锏，我有位程序员朋友，有问题可以请教他嘛，哈哈哈😂<p>
+                    <h2>AI的调教技巧</h2>
+                    <p>ai它不是特别听话，有时候还故意偷懒。问题可能在于询问方式不对，对待ai尽量要少用“你”这个字眼，它是冰冷的最强工具，拟人化会让它变笨。<p>
+                    <p>我举个例子，比如说想让ai写网站（本站之前就是这样诞生的），提示词是：请你帮我创作一个个人网站，我的需求是...，这种提问方式ai会写个般般不是很厉害的网站，外行的我看不出哪里有什么不好<p>
+                    <p>如果是这样问的，提示词：程序设计高手会怎么设计这个网站。ai说如果它是那位高手，它会从几个维度对这个网站的代码进行“降维打击”式的重构。我尼玛，弄了半天ai这家伙还是没用真本事呗，我一会日志更新一下吧，虽然我看不懂。<p>
+                    <p>插图我也是用ai自己生成的,避免侵权<p>
+                    <p>累了，暂时没时间研究了，先去干点别的，就更新到这吧。
+                `
+            },
+        
+        ];
+
+        const container = document.getElementById('posts-container');
+
+        function init() {
+            blogData.sort((a, b) => new Date(b.date) - new Date(a.date));
+            renderPosts(blogData);
         }
 
-        function filterPosts() {
-            const input = document.getElementById('searchInput');
-            const filter = input.value.toLowerCase();
-            const cards = document.getElementsByClassName('post-card');
-            for (let i = 0; i < cards.length; i++) {
-                const title = cards[i].querySelector('.post-title').innerText.toLowerCase();
-                const meta = cards[i].querySelector('.post-meta').innerText.toLowerCase();
-                const excerpt = cards[i].querySelector('.post-excerpt').innerText.toLowerCase();
-                if (title.includes(filter) || meta.includes(filter) || excerpt.includes(filter)) {
-                    cards[i].style.display = "";
-                } else {
-                    cards[i].style.display = "none";
-                }
+        function renderPosts(data) {
+            container.innerHTML = "";
+            
+            if(data.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color:#999; margin-top:50px;">No posts found.</div>`;
+                return;
             }
+
+            data.forEach(post => {
+                let imgHTML = '';
+                if (post.cover && post.cover !== "") {
+                    imgHTML = `<img src="${post.cover}" class="post-cover-thumb" loading="lazy" onerror="this.style.display='none'">`;
+                }
+
+                const cardHTML = `
+                    <div class="post-card" onclick="openArticle('${post.id}')">
+                        <div class="post-meta">${post.date}</div>
+                        <h3 class="post-title">${post.title}</h3>
+                        ${imgHTML}
+                        <div class="post-excerpt">${post.desc}</div>
+                        <span class="read-more-btn">Read Article</span>
+                    </div>
+                `;
+                container.innerHTML += cardHTML;
+            });
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = blogData.filter(post => 
+                post.title.toLowerCase().includes(query) || 
+                post.date.toLowerCase().includes(query) || 
+                post.desc.toLowerCase().includes(query)
+            );
+            renderPosts(filtered);
         }
 
         function openArticle(id) {
-            const source = document.getElementById(id);
-            if(source) {
-                const content = source.innerHTML;
-                document.getElementById('reader-body').innerHTML = content;
+            const post = blogData.find(p => p.id === id);
+            if(post) {
+                document.getElementById('reader-body').innerHTML = post.content;
                 document.getElementById('article-reader').style.display = 'block';
-                document.body.style.overflow = 'hidden'; 
+                document.body.style.overflow = 'hidden';
             }
         }
 
         function closeArticle() {
             document.getElementById('article-reader').style.display = 'none';
-            document.body.style.overflow = 'auto'; 
+            document.body.style.overflow = 'auto';
         }
+
+        window.onload = init;
     </script>
 </body>
 </html>
