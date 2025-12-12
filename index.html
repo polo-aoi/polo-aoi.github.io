@@ -57,6 +57,54 @@
         /* --- 3. 布局与容器 --- */
         .container { max-width: 700px; margin: 0 auto; padding: 0 20px; padding-bottom: 100px; }
         
+        /* --- 3.5 搜索栏 (新增) --- */
+        .search-wrapper {
+            margin-bottom: 40px;
+            position: relative;
+        }
+        .search-input {
+            width: 100%;
+            padding: 15px 25px 15px 50px; /* 左边留出图标位置 */
+            border: none;
+            border-radius: 50px;
+            background-color: #f8f9fa;
+            font-size: 16px;
+            color: #333;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            box-sizing: border-box;
+            -webkit-appearance: none; /* 移除iOS默认样式 */
+        }
+        .search-input:focus {
+            background-color: #fff;
+            box-shadow: 0 5px 20px rgba(0, 68, 204, 0.15); /* 聚焦时的蓝色光晕 */
+        }
+        /* 纯CSS绘制搜索图标 */
+        .search-icon {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            width: 14px;
+            height: 14px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .search-icon::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 5px;
+            height: 2px;
+            background-color: #ccc;
+            transform: rotate(45deg);
+        }
+        .search-input:focus ~ .search-icon { border-color: var(--primary); }
+        .search-input:focus ~ .search-icon::after { background-color: var(--primary); }
+
         /* --- 4. 列表卡片 --- */
         .post-card { margin-bottom: 60px; cursor: pointer; }
         .post-card:active { opacity: 0.8; }
@@ -100,31 +148,16 @@
         .article-body img { width: 100%; height: auto; margin: 15px 0; border-radius: 4px; }
         .article-body blockquote { border-left: 3px solid var(--primary); margin: 25px 0; padding: 10px 15px; background: #f9faff; color: #555; font-style: italic; font-size: 15px; }
 
-        /* =========================================
-           📱 移动端适配核心代码 (Media Queries)
-           ========================================= */
+        /* 移动端适配 */
         @media screen and (max-width: 768px) {
-            /* 1. 调整封面高度 */
             .header { margin-bottom: 40px; }
             .cover-image { height: 220px; } 
-
-            /* 2. 调整头像与名字 */
             .user-info { margin-top: -40px; }
             .avatar { width: 85px; height: 85px; border-width: 3px; }
-            .user-name { font-size: 22px; }
-            .user-desc { font-size: 12px; }
-
-            /* 3. 内容容器更宽一点 */
             .container { padding: 0 15px 80px; }
-            
-            /* 4. 列表卡片 */
             .post-card { margin-bottom: 40px; }
-            .post-title { font-size: 20px; }
             .post-cover-thumb { height: 180px; }
-
-            /* 5. 文章内页 */
             .article-body h1 { font-size: 24px; }
-            .article-body p { font-size: 16px; line-height: 1.7; }
         }
 
         #hidden-posts-source { display: none; }
@@ -147,35 +180,43 @@
         </div>
 
         <div class="container">
-            <div class="post-card" onclick="openArticle('post-1')">
-                <div class="post-meta">Dec 11, 2025</div>
-                <h3 class="post-title">为什么我选择了极简主义：关于蓝色的思考</h3>
-                <img src="images/photo1.jpg" class="post-cover-thumb" onerror="this.src='https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=800'">
-                <div class="post-excerpt">
-                    蓝色是天空的深度，也是大海的静谧。在设计这个网站时，我刻意去掉了多余的边框和装饰... (点击阅读全文)
-                </div>
-                <span class="read-more-btn">Read Article</span>
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search..." onkeyup="filterPosts()">
+                <div class="search-icon"></div>
             </div>
 
-            <div class="post-card" onclick="openArticle('post-2')">
-                <div class="post-meta">Dec 10, 2025</div>
-                <h3 class="post-title">如何用 VS Code 搭建个人博客</h3>
-                <div class="post-excerpt">
-                    不需要复杂的服务器，只需要一个 GitHub 账号和 VS Code，你就能拥有属于自己的角落...
+            <div id="posts-list">
+                
+                <div class="post-card" onclick="openArticle('post-1')">
+                    <div class="post-meta">Dec 11, 2025</div>
+                    <h3 class="post-title">为什么我选择了极简主义：关于蓝色的思考</h3>
+                    <img src="images/photo1.jpg" class="post-cover-thumb" onerror="this.src='https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=800'">
+                    <div class="post-excerpt">
+                        蓝色是天空的深度，也是大海的静谧。在设计这个网站时，我刻意去掉了多余的边框和装饰... (点击阅读全文)
+                    </div>
+                    <span class="read-more-btn">Read Article</span>
                 </div>
-                <span class="read-more-btn">Read Article</span>
-            </div>
 
-             <div class="post-card" onclick="openArticle('post-3')">
-                <div class="post-meta">Dec 11, 2025</div>
-                <h3 class="post-title">OMG</h3>
-                <img src="images/photo2.jpg" class="post-cover-thumb">
-                <div class="post-excerpt">
-                    惹毛女人你只需要这么做
+                <div class="post-card" onclick="openArticle('post-2')">
+                    <div class="post-meta">Dec 10, 2025</div>
+                    <h3 class="post-title">如何用 VS Code 搭建个人博客</h3>
+                    <div class="post-excerpt">
+                        不需要复杂的服务器，只需要一个 GitHub 账号和 VS Code，你就能拥有属于自己的角落...
+                    </div>
+                    <span class="read-more-btn">Read Article</span>
                 </div>
-                <span class="read-more-btn">Read Article</span>
-            </div>
 
+                <div class="post-card" onclick="openArticle('post-3')">
+                    <div class="post-meta">Dec 12, 2025</div>
+                    <h3 class="post-title">OMG</h3>
+                    <img src="images/photo2.jpg" class="post-cover-thumb">
+                    <div class="post-excerpt">
+                        惹毛女人你只需要这么做
+                    </div>
+                    <span class="read-more-btn">Read Article</span>
+                </div>
+
+            </div>
         </div>
     </div>
 
@@ -220,14 +261,10 @@
             <div class="article-body">
                 <h1>只要这样</h1>
                 <div class="meta">2025.12.12</div>
-                
                 <p>然后这样</p>
-                
                 <h2>最后</h2>
                 <p>就惹毛了</p>
-                
                 <img src="images/photo6.jpg" onerror="this.src='images/photo2.jpg'">
-                
                 <blockquote>
                     雨は いつか止むのでしょうか ずいぶん長い間 冷たい，<br>
                     ------这雨是否终有一天将会停下 它已冰冷地下了太长太久。
@@ -238,7 +275,45 @@
     </div>
 
     <script>
-        // 打开文章
+        // 1. 自动排序：网页一打开，就把最新的日期排到最上面
+        window.onload = function() {
+            sortPostsByDate();
+        };
+
+        function sortPostsByDate() {
+            const list = document.getElementById('posts-list');
+            const cards = Array.from(list.getElementsByClassName('post-card'));
+
+            cards.sort((a, b) => {
+                const dateA = new Date(a.querySelector('.post-meta').innerText);
+                const dateB = new Date(b.querySelector('.post-meta').innerText);
+                return dateB - dateA; // 降序：最新的日期(大)排在前面
+            });
+
+            cards.forEach(card => list.appendChild(card));
+        }
+
+        // 2. 搜索功能：输入关键字，自动隐藏不相关的文章
+        function filterPosts() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const cards = document.getElementsByClassName('post-card');
+
+            for (let i = 0; i < cards.length; i++) {
+                const title = cards[i].querySelector('.post-title').innerText.toLowerCase();
+                const meta = cards[i].querySelector('.post-meta').innerText.toLowerCase();
+                const excerpt = cards[i].querySelector('.post-excerpt').innerText.toLowerCase();
+                
+                // 如果标题、日期或简介包含搜索词，就显示；否则隐藏
+                if (title.includes(filter) || meta.includes(filter) || excerpt.includes(filter)) {
+                    cards[i].style.display = "";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+
+        // 3. 打开/关闭文章
         function openArticle(id) {
             const source = document.getElementById(id);
             if(source) {
@@ -249,7 +324,6 @@
             }
         }
 
-        // 关闭文章
         function closeArticle() {
             document.getElementById('article-reader').style.display = 'none';
             document.body.style.overflow = 'auto'; 
