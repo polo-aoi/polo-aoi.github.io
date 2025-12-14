@@ -5,180 +5,255 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ポロ蒼 | Polo Aoi</title>
     <link rel="icon" href="images/avatar.jpg" type="image/jpeg">
+    
     <style>
         /* --- 1. 全局配置 --- */
         :root {
-            --primary: #0044cc;      /* 克莱因蓝 */
+            --primary: #0044cc;      /* 灵魂色：克莱因蓝 */
             --bg-color: #ffffff;
-            --text-main: #2c3e50;
-            --text-light: #94a3b8;
-            --line-color: #f0f0f0;
-            --tag-bg: #f4f6f8;
+            --text-main: #1a1a1a;    /* 高级碳素黑 */
+            --text-light: #888888;
+            --line-color: #f5f5f5;
+            --tag-bg: #f8f8f8;
+            --watermark-color: rgba(0, 0, 0, 0.03);
+        }
+
+        /* 背景水印 */
+        body::before {
+            content: '无限进步';
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 15vw; 
+            font-weight: 900;
+            color: var(--watermark-color);
+            pointer-events: none;
+            z-index: -1;
+            white-space: nowrap;
+            font-family: "Songti SC", "Noto Serif SC", serif; 
+            letter-spacing: 0;
         }
 
         body { margin: 0; padding: 0; background-color: var(--bg-color); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: var(--text-main); line-height: 1.8; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
 
-        /* --- 2. 封面与头像 --- */
-        .header { margin-bottom: 40px; position: relative; }
-        .cover-image { width: 100%; height: 380px; object-fit: cover; background-color: #f0f5ff; transition: height 0.3s; }
-        .user-wrapper { max-width: 700px; margin: 0 auto; position: relative; padding: 0 20px; }
-        .user-info { margin-top: -60px; display: flex; align-items: flex-end; position: relative; z-index: 10; }
-        .avatar { width: 120px; height: 120px; border-radius: 50%; border: 5px solid var(--bg-color); object-fit: cover; background-color: #eee; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .user-text { margin-left: 25px; margin-bottom: 10px; }
-        .user-name { font-size: 28px; font-weight: 800; color: #000; letter-spacing: -0.5px; }
-        .user-desc { font-size: 13px; color: var(--text-light); margin-top: 4px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+        /* --- 开屏动画 (终极丝滑版) --- */
+        .opening-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0;
+            pointer-events: none;
+            animation: fadeOutOverlay 0.8s ease-out 1.8s forwards;
+        }
 
-        /* --- 3. 布局容器 --- */
+        @keyframes fadeOutOverlay { to { opacity: 0; visibility: hidden; } }
+
+        .opening-char {
+            font-size: 15vw; 
+            font-weight: 900;
+            color: #000;
+            font-family: "Songti SC", "Noto Serif SC", serif;
+            letter-spacing: 0;
+            opacity: 0;
+            transform-origin: center center;
+            animation: 
+                floatIn 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) forwards,
+                morphIntoWatermark 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) 1.2s forwards;
+        }
+        
+        .char-1 { animation-delay: 0.05s, 1.2s; }
+        .char-2 { animation-delay: 0.1s, 1.2s; }
+        .char-3 { animation-delay: 0.15s, 1.2s; }
+        .char-4 { animation-delay: 0.2s, 1.2s; }
+
+        @keyframes floatIn { 
+            0% { opacity: 0; transform: translateY(50px) scale(0.85); } 
+            100% { opacity: 1; transform: translateY(0) scale(0.85); } 
+        }
+
+        @keyframes morphIntoWatermark { 
+            0% { transform: translateY(0) scale(0.85); color: #000; }
+            100% { transform: translateY(0) scale(1); color: var(--watermark-color); } 
+        }
+
+        /* --- 主内容包裹层 --- */
+        .main-content-wrapper {
+            opacity: 0;
+            animation: fadeInMain 1.0s ease-out 1.8s forwards;
+        }
+        @keyframes fadeInMain { 
+            from { opacity: 0; transform: translateY(30px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        /* --- 头部区域 --- */
+        .header { padding-top: 100px; margin-bottom: 60px; position: relative; }
+        .user-wrapper { max-width: 700px; margin: 0 auto; position: relative; padding: 0 20px; z-index: 10; }
+
+        .user-card {
+            background: #ffffff;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.04); 
+            padding: 35px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center; 
+            gap: 35px;
+            transition: transform 0.3s ease;
+        }
+        .user-card:hover { transform: translateY(-2px); }
+
+        .avatar { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; background-color: #f8f8f8; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+        .user-text { flex-grow: 1; }
+        .user-name { font-size: 30px; font-weight: 900; color: #000; letter-spacing: -0.5px; margin-bottom: 12px; line-height: 1; }
+        
+        .user-motto {
+            font-family: "Songti SC", "Noto Serif SC", serif;
+            font-size: 14px;
+            color: #555;
+            font-style: italic;
+            letter-spacing: 0.5px;
+            line-height: 1.5;
+            border-left: 2px solid var(--primary);
+            padding-left: 12px;
+        }
+
+        /* --- 容器 --- */
         .container { max-width: 700px; margin: 0 auto; padding: 0 20px; padding-bottom: 100px; }
         
-        /* 🛠️ 工具栏区域 */
         .toolbar-container { margin-bottom: 40px; position: relative; }
-        
-        /* 第一行：搜索框 + 按钮 */
         .search-row { display: flex; gap: 10px; align-items: center; }
-        
-        .search-wrapper { position: relative; flex-grow: 1; /* 搜索框占据剩余空间 */ }
-        .search-input { width: 100%; padding: 12px 20px 12px 45px; border: none; border-radius: 12px; background-color: #f8f9fa; font-size: 15px; color: #333; outline: none; transition: all 0.3s ease; box-sizing: border-box; -webkit-appearance: none; }
-        .search-input:focus { background-color: #fff; box-shadow: 0 4px 15px rgba(0, 68, 204, 0.1); }
+        .search-wrapper { position: relative; flex-grow: 1; }
+        .search-input { width: 100%; padding: 12px 20px 12px 45px; border: 1px solid var(--line-color); border-radius: 12px; background-color: #fff; font-size: 15px; color: #333; outline: none; transition: all 0.3s ease; box-sizing: border-box; -webkit-appearance: none; }
+        .search-input:focus { border-color: var(--primary); box-shadow: 0 4px 15px rgba(0, 68, 204, 0.05); }
         .search-icon { position: absolute; top: 50%; left: 18px; transform: translateY(-50%); width: 14px; height: 14px; border: 2px solid #ccc; border-radius: 50%; pointer-events: none; }
         .search-icon::after { content: ''; position: absolute; top: 10px; left: 10px; width: 4px; height: 2px; background-color: #ccc; transform: rotate(45deg); }
         .search-input:focus ~ .search-icon { border-color: var(--primary); }
         .search-input:focus ~ .search-icon::after { background-color: var(--primary); }
 
-        /* 🔘 筛选按钮 */
-        .filter-btn {
-            padding: 0 20px;
-            height: 46px; /* 和搜索框一样高 */
-            border-radius: 12px;
-            border: 1px solid #eee;
-            background-color: #fff;
-            color: #555;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s ease;
-        }
+        .filter-btn { padding: 0 20px; height: 46px; border-radius: 12px; border: 1px solid var(--line-color); background-color: #fff; color: #555; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease; }
         .filter-btn:hover { background-color: #f9f9f9; border-color: #ddd; }
         .filter-btn svg { width: 16px; height: 16px; fill: currentColor; }
-        
-        /* 激活状态（当选择了某个标签，或者面板打开时） */
         .filter-btn.active { background-color: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 4px 12px rgba(0, 68, 204, 0.2); }
 
-        /* 📦 隐藏的标签面板 */
-        .tag-panel {
-            display: none; /* 默认隐藏 */
-            margin-top: 15px;
-            background: #fff;
-            border: 1px solid #f0f0f0;
-            border-radius: 16px;
-            padding: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            animation: slideDown 0.3s ease;
-        }
+        .tag-panel { display: none; margin-top: 15px; background: #fff; border: 1px solid var(--line-color); border-radius: 16px; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); animation: slideDown 0.3s ease; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
         .tag-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-        .tag-option {
-            padding: 6px 14px;
-            border-radius: 8px;
-            background-color: #f4f6f8;
-            color: #666;
-            font-size: 13px;
-            font-weight: 500;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+        .tag-option { padding: 6px 14px; border-radius: 8px; background-color: var(--tag-bg); color: #666; font-size: 13px; font-weight: 500; border: none; cursor: pointer; transition: all 0.2s; }
         .tag-option:hover { background-color: #eef2ff; color: var(--primary); }
         .tag-option.selected { background-color: var(--primary); color: #fff; }
 
-        /* --- 4. 列表卡片 --- */
-        .post-card { margin-bottom: 50px; cursor: pointer; animation: fadeIn 0.5s ease; border-bottom: 1px solid transparent; padding-bottom: 20px; }
-        .post-card:hover { border-bottom-color: #f5f5f5; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .post-card:active { opacity: 0.8; }
-        
-        .card-header-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
-        .post-meta { font-size: 12px; color: var(--text-light); font-family: Georgia, serif; font-style: italic; }
-        .card-tag { font-size: 10px; color: var(--primary); background-color: var(--tag-bg); padding: 1px 6px; border-radius: 3px; font-weight: 600; text-transform: uppercase; opacity: 0.8;}
-
-        .post-title { font-size: 20px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.4; transition: color 0.2s; color: #000;}
+        .post-card { margin-bottom: 40px; cursor: pointer; border-bottom: 1px solid var(--line-color); padding-bottom: 25px; transition: all 0.3s; }
+        .post-card:hover { transform: translateY(-3px); }
+        .card-header-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .post-meta { font-size: 13px; color: var(--text-light); font-family: Georgia, serif; font-style: italic; }
+        .card-tag { font-size: 11px; color: var(--primary); background-color: rgba(0, 68, 204, 0.05); padding: 2px 8px; border-radius: 4px; font-weight: 600; letter-spacing: 0.5px; }
+        .post-title { font-size: 22px; font-weight: 800; margin: 0 0 10px 0; line-height: 1.3; color: #000; transition: color 0.2s;}
         .post-card:hover .post-title { color: var(--primary); }
-        .post-excerpt { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; } 
+        .post-excerpt { font-size: 15px; color: #555; line-height: 1.7; margin-bottom: 15px; } 
         .search-highlight { color: var(--primary); font-weight: bold; background: rgba(0, 68, 204, 0.05); padding: 0 2px; border-radius: 2px; }
-        .post-cover-thumb { width: 100%; height: 220px; object-fit: cover; border-radius: 4px; margin-bottom: 15px; background-color: #f8f8f8; display: block; }
-        .read-more-btn { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; border-bottom: 1px solid transparent; }
+        .post-cover-thumb { width: 100%; height: 240px; object-fit: cover; border-radius: 12px; margin-bottom: 18px; background-color: #f8f8f8; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .read-more-btn { color: var(--primary); font-size: 13px; font-weight: 700; letter-spacing: 0.5px; }
         
-        /* --- 5. 阅读器 --- */
+        /* --- 阅读器 (✨ 高级黑金版) --- */
         #article-reader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 100; overflow-y: auto; animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .reader-nav { max-width: 700px; margin: 0 auto; padding: 20px; position: sticky; top: 0; background: rgba(255,255,255,0.95); border-bottom: 1px solid var(--line-color); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); }
+        .reader-nav { max-width: 700px; margin: 0 auto; padding: 20px; position: sticky; top: 0; background: rgba(255,255,255,0.98); border-bottom: 1px solid var(--line-color); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); }
         .back-btn { border: none; background: none; font-size: 16px; cursor: pointer; color: var(--text-main); display: flex; align-items: center; }
         .back-btn::before { content: '←'; margin-right: 8px; font-size: 20px; }
-        
         .reader-content { max-width: 680px; margin: 40px auto; padding: 0 20px 100px; }
-        .reader-content h1 { font-size: 28px; margin-bottom: 10px; line-height: 1.3; color: var(--primary); }
-        .reader-content .meta { color: var(--text-light); font-size: 13px; margin-bottom: 30px; border-bottom: 1px solid var(--line-color); padding-bottom: 20px; }
-        .reader-content h2 { font-size: 19px; margin-top: 40px; margin-bottom: 15px; color: var(--primary); position: relative; padding-left: 12px; }
-        .reader-content h2::before { content: ''; position: absolute; left: 0; top: 5px; height: 18px; width: 3px; background: var(--primary); }
-        .reader-content p { font-size: 16px; line-height: 1.8; margin-bottom: 20px; color: #333; text-align: justify; }
-        .reader-content img { display: block; margin: 20px auto; max-width: 100%; max-height: 600px; width: auto; height: auto; border-radius: 4px; object-fit: contain; }
-        .reader-content blockquote { border-left: 4px solid var(--primary); margin: 25px 0; padding: 15px 20px; background: #f0f5ff; color: #555; font-style: italic; font-size: 15px; border-radius: 0 4px 4px 0; }
-        .reader-content code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-family: "Menlo", "Consolas", monospace; color: #d63384; font-size: 0.9em; }
+        
+        /* ✨ 1. 大标题：使用高级碳素黑，而非纯黑 */
+        .reader-content h1 { 
+            font-size: 32px; 
+            margin-bottom: 10px; 
+            line-height: 1.3; 
+            color: #1a1a1a;  /* Carbon Black */
+            font-weight: 900; 
+        }
+        
+        .reader-content .meta { color: var(--text-light); font-size: 13px; margin-bottom: 40px; border-bottom: 1px solid var(--line-color); padding-bottom: 25px; }
+        
+        /* ✨ 2. 小标题：黑字 + 蓝线点缀 = 设计感 */
+        .reader-content h2 { 
+            font-size: 22px; 
+            margin-top: 50px; 
+            margin-bottom: 20px; 
+            color: #1a1a1a; /* 标题文字是黑的 */
+            font-weight: 800; 
+            position: relative;
+            padding-left: 12px; /* 留出空隙 */
+        }
+        
+        /* 这个伪元素就是“设计感”的来源 */
+        .reader-content h2::before { 
+            content: ''; 
+            position: absolute; 
+            left: 0; top: 4px; 
+            height: 24px; 
+            width: 4px; 
+            background: var(--primary); /* 只有这一小条是克莱因蓝 */
+            border-radius: 2px;
+        }
+
+        .reader-content p { font-size: 17px; line-height: 1.85; margin-bottom: 25px; color: #333; }
+        .reader-content img { display: block; margin: 30px auto; max-width: 100%; border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+        .reader-content blockquote { border-left: 3px solid var(--primary); margin: 30px 0; padding: 20px 25px; background: #f8faff; color: #555; font-size: 16px; border-radius: 0 8px 8px 0; }
+        .reader-content code { background: #f4f4f4; padding: 3px 6px; border-radius: 4px; font-family: "Menlo", "Consolas", monospace; color: #d63384; font-size: 0.9em; }
 
         @media screen and (max-width: 768px) {
-            .header { margin-bottom: 30px; }
-            .cover-image { height: 200px; } 
-            .user-info { margin-top: -50px; flex-direction: column; align-items: center; text-align: center; }
-            .avatar { width: 100px; height: 100px; border-width: 4px; margin-bottom: 15px; }
-            .user-text { margin-left: 0; margin-bottom: 10px; }
-            .user-name { font-size: 24px; }
+            .header { padding-top: 60px; margin-bottom: 40px; }
+            .user-card { flex-direction: column; text-align: center; gap: 20px; padding: 30px 20px; align-items: center;}
             .container { padding: 0 15px 80px; }
             .reader-content img { max-height: 400px; }
+            .user-motto { border-left: none; padding-left: 0; text-align: center; } 
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <img src="images/cover.jpg" class="cover-image" onerror="this.src='https://images.unsplash.com/photo-1516669929559-867175498845?w=1600'">
-        <div class="user-wrapper">
-            <div class="user-info">
-                <img src="images/avatar.jpg" class="avatar" onerror="this.src='https://api.dicebear.com/7.x/notionists/svg?seed=Felix'">
-                <div class="user-text">
-                    <div class="user-name">ポロ蒼</div>
-                    <div class="user-desc">Blue / Photography / Minimalist</div>
-                </div>
-            </div>
-        </div>
+    <div class="opening-overlay">
+        <span class="opening-char char-1">无</span>
+        <span class="opening-char char-2">限</span>
+        <span class="opening-char char-3">进</span>
+        <span class="opening-char char-4">步</span>
     </div>
 
-    <div class="container">
-        
-        <div class="toolbar-container">
-            <div class="search-row">
-                <div class="search-wrapper">
-                    <input type="text" id="searchInput" class="search-input" placeholder="Search..." oninput="handleSearch()">
-                    <div class="search-icon"></div>
-                </div>
-                
-                <button id="filterBtn" class="filter-btn" onclick="toggleTagPanel()">
-                    <svg viewBox="0 0 24 24"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
-                    <span id="filterBtnText">Tags</span>
-                </button>
-            </div>
-
-            <div id="tagPanel" class="tag-panel">
-                <div id="tagGrid" class="tag-grid">
+    <div class="main-content-wrapper">
+        <div class="header">
+            <div class="user-wrapper">
+                <div class="user-card">
+                    <img src="images/avatar.jpg" class="avatar" onerror="this.src='https://api.dicebear.com/7.x/notionists/svg?seed=Felix'">
+                    <div class="user-text">
+                        <div class="user-name">ポロ蒼</div>
+                        <div class="user-motto">轮回非循环，乃螺旋；直面熵增，创生负熵。</div>
                     </div>
+                </div>
             </div>
         </div>
 
-        <div id="posts-container"></div>
+        <div class="container">
+            <div class="toolbar-container">
+                <div class="search-row">
+                    <div class="search-wrapper">
+                        <input type="text" id="searchInput" class="search-input" placeholder="Search..." oninput="handleSearch()">
+                        <div class="search-icon"></div>
+                    </div>
+                    <button id="filterBtn" class="filter-btn" onclick="toggleTagPanel()">
+                        <svg viewBox="0 0 24 24"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+                        <span id="filterBtnText">Tags</span>
+                    </button>
+                </div>
+                <div id="tagPanel" class="tag-panel">
+                    <div id="tagGrid" class="tag-grid"></div>
+                </div>
+            </div>
+            <div id="posts-container"></div>
+        </div>
     </div>
 
     <div id="article-reader">
@@ -191,7 +266,7 @@
 
     <script>
         const blogData = [
-                        {
+            {
                 id: "post-9",
                 title: "网站架构更新日志 v2.1：体验进化",
                 date: "Dec 14, 2025",
@@ -227,8 +302,7 @@
                     </blockquote>
                 `
             },
-
-             {
+            {
                 id: "post-8",
                 title: "HTML 特殊符号速查表 (详解版)",
                 date: "Dec 14, 2025",
@@ -242,17 +316,17 @@
                     <p>这是因为浏览器把某些符号当成了“指令”。为了显示这些符号本身，我们需要使用<b>字符实体 (HTML Entities)</b>，也就是符号的“替身”。</p>
                     <h2>1. 基础三巨头：防止代码崩溃</h2>
                     <p>这三个符号是 HTML 语法的基石，直接使用会导致浏览器解析错误，必须使用替身。</p>
-                    <h3>🔵 &amp;lt; (小于号)</h3>
+                    <h3>&amp;lt; (小于号)</h3>
                     <ul><li><b>本尊</b>：<code>&lt;</code> (Less Than)</li><li><b>代码写法</b>：<code>&amp;lt;</code></li></ul>
-                    <h3>🔵 &amp;gt; (大于号)</h3>
+                    <h3>&amp;gt; (大于号)</h3>
                     <ul><li><b>本尊</b>：<code>&gt;</code> (Greater Than)</li><li><b>代码写法</b>：<code>&amp;gt;</code></li></ul>
-                    <h3>🔵 &amp;amp; (和号)</h3>
+                    <h3>&amp;amp; (和号)</h3>
                     <ul><li><b>本尊</b>：<code>&amp;</code> (Ampersand)</li><li><b>代码写法</b>：<code>&amp;amp;</code></li></ul>
                     <h2>2. 排版神器</h2>
-                    <h3>🔵 &amp;nbsp; (不换行空格)</h3>
+                    <h3>&amp;nbsp; (不换行空格)</h3>
                     <ul><li><b>代码写法</b>：<code>&amp;nbsp;</code></li><li><b>用途</b>：强制空格，防止自动换行。</li></ul>
                     <h2>3. 代码安全</h2>
-                    <h3>🔵 &amp;quot; (双引号)</h3>
+                    <h3>&amp;quot; (双引号)</h3>
                     <ul><li><b>代码写法</b>：<code>&amp;quot;</code></li></ul>
                 `
             },
@@ -359,16 +433,6 @@
                     <p>使用语义化的标签，让网页结构清晰。</p>
                 `
             },
-            {
-           
-                id: "post-1",
-                title: "为什么我选择了极简主义",
-                date: "Dec 11, 2025",
-                tags: ["Life", "Thinking"],
-                cover: "images/photo1.jpg",
-                desc: "蓝色是天空的深度，也是大海的静谧。在设计这个网站时，我刻意去掉了多余的边框和装饰...",
-                content: `<h1>为什么我选择了极简主义</h1><div class="meta">Published on Dec 11, 2025</div><p>详细内容...</p>`
-            }
         ];
 
         const container = document.getElementById('posts-container');
@@ -381,6 +445,14 @@
         let isPanelOpen = false;
 
         function init() {
+            // 排序逻辑：优先按日期降序，如果日期相同，保持数组原顺序
+            blogData.sort((a, b) => {
+                const timeA = new Date(a.date).getTime();
+                const timeB = new Date(b.date).getTime();
+                const diff = timeB - timeA;
+                return diff !== 0 ? diff : 0;
+            });
+
             const urlParams = new URLSearchParams(window.location.search);
             const postId = urlParams.get('post');
             const tagParam = urlParams.get('tag');
@@ -396,57 +468,38 @@
             if (postId) openArticle(postId);
         }
 
-        // --- 开关面板 ---
         function toggleTagPanel() {
             isPanelOpen = !isPanelOpen;
             tagPanel.style.display = isPanelOpen ? 'block' : 'none';
-            // 如果面板打开，按钮稍微变色提示
             if(isPanelOpen) {
                 filterBtn.style.borderColor = 'var(--primary)';
             } else {
-                // 如果关上面板，且当前是All，恢复灰色边框
-                if(currentTag === 'All') filterBtn.style.borderColor = '#eee';
+                if(currentTag === 'All') filterBtn.style.borderColor = 'var(--line-color)';
             }
         }
 
-        // --- 渲染标签菜单 ---
         function renderTagMenu() {
             const allTags = new Set();
             blogData.forEach(post => {
                 if(post.tags) post.tags.forEach(t => allTags.add(t));
             });
             const tagsArray = ['All', ...Array.from(allTags)];
-
             tagGrid.innerHTML = tagsArray.map(tag => `
-                <button class="tag-option ${tag === currentTag ? 'selected' : ''}" 
-                        onclick="selectTag('${tag}')">
-                    ${tag}
-                </button>
+                <button class="tag-option ${tag === currentTag ? 'selected' : ''}" onclick="selectTag('${tag}')">${tag}</button>
             `).join('');
         }
 
-        // --- 选择标签 ---
         function selectTag(tag) {
-            // 1. 关闭面板
             toggleTagPanel();
-            // 2. 执行筛选
             filterByTag(tag, true);
         }
 
         function filterByTag(tag, updateUrl = true) {
             currentTag = tag;
-            
-            // 更新按钮文字
             filterBtnText.innerText = tag === 'All' ? 'Tags' : tag;
-            
-            // 更新按钮样式（有颜色表示正在筛选）
-            if (tag !== 'All') {
-                filterBtn.classList.add('active');
-            } else {
-                filterBtn.classList.remove('active');
-            }
+            if (tag !== 'All') filterBtn.classList.add('active');
+            else filterBtn.classList.remove('active');
 
-            // 更新面板里的选中状态
             const options = document.getElementsByClassName('tag-option');
             Array.from(options).forEach(opt => {
                 if(opt.innerText === tag) opt.classList.add('selected');
@@ -454,19 +507,12 @@
             });
 
             if (updateUrl) {
-                if (tag === 'All') {
-                    window.history.pushState({}, '', window.location.pathname);
-                } else {
-                    window.history.pushState({ tag: tag }, '', '?tag=' + tag);
-                }
+                const newUrl = tag === 'All' ? window.location.pathname : '?tag=' + tag;
+                window.history.pushState({ tag: tag }, '', newUrl);
             }
 
-            if (tag === 'All') {
-                renderPosts(blogData);
-            } else {
-                const filtered = blogData.filter(post => post.tags && post.tags.includes(tag));
-                renderPosts(filtered);
-            }
+            if (tag === 'All') renderPosts(blogData);
+            else renderPosts(blogData.filter(post => post.tags && post.tags.includes(tag)));
         }
 
         function renderPosts(data, highlightKeyword = null) {
@@ -533,10 +579,7 @@
 
         function handleSearch() {
             const query = document.getElementById('searchInput').value.trim();
-            // 搜索时，重置标签状态
-            if(currentTag !== 'All') {
-                filterByTag('All', false);
-            }
+            if(currentTag !== 'All') filterByTag('All', false);
 
             if (!query) {
                 history.pushState({}, '', window.location.pathname);
@@ -555,8 +598,7 @@
         }
 
         function onCardClick(id) {
-            const newUrl = '?post=' + id;
-            window.history.pushState({ postId: id }, '', newUrl);
+            window.history.pushState({ postId: id }, '', '?post=' + id);
             openArticle(id);
         }
 
@@ -581,9 +623,8 @@
             const postId = urlParams.get('post');
             const tagParam = urlParams.get('tag');
 
-            if (postId) {
-                openArticle(postId); 
-            } else if (tagParam) {
+            if (postId) openArticle(postId); 
+            else if (tagParam) {
                 document.getElementById('article-reader').style.display = 'none';
                 filterByTag(tagParam, false);
             } else {
