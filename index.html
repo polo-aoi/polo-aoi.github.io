@@ -44,7 +44,10 @@
         .post-title { font-size: 22px; font-weight: 700; margin: 0 0 10px 0; line-height: 1.4; transition: color 0.2s; color: #000;}
         .post-card:hover .post-title { color: var(--primary); }
         .post-excerpt { font-size: 15px; color: #666; line-height: 1.6; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        /* 列表里的缩略图：保持原样，不用太大 */
+        
+        /* 🔍 搜索高亮样式 (关键) */
+        .search-highlight { color: var(--primary); font-weight: bold; background: rgba(0, 68, 204, 0.05); padding: 0 2px; border-radius: 2px; }
+
         .post-cover-thumb { width: 100%; height: 240px; object-fit: cover; border-radius: 4px; margin-bottom: 15px; background-color: #f8f8f8; display: block; }
         .read-more-btn { color: var(--primary); font-size: 14px; font-weight: 600; text-decoration: none; border-bottom: 1px solid transparent; }
         .read-more-btn:hover { border-bottom-color: var(--primary); }
@@ -56,55 +59,15 @@
         .back-btn { border: none; background: none; font-size: 16px; cursor: pointer; color: var(--text-main); display: flex; align-items: center; }
         .back-btn::before { content: '←'; margin-right: 8px; font-size: 20px; }
         
-        /* ⚠️ 核心修复区：这里的类名改成了 .reader-content，确保和下面 HTML 对应 */
+        /* 阅读器内容 */
         .reader-content { max-width: 680px; margin: 40px auto; padding: 0 20px 100px; }
-
-        /* 文章大标题 H1 */
-        .reader-content h1 { 
-            font-size: 30px; 
-            margin-bottom: 10px; 
-            line-height: 1.3; 
-            color: var(--primary); /* 🔵 强制蓝色 */
-        }
-        
+        .reader-content h1 { font-size: 30px; margin-bottom: 10px; line-height: 1.3; color: var(--primary); }
         .reader-content .meta { color: var(--text-light); font-size: 14px; margin-bottom: 30px; border-bottom: 1px solid var(--line-color); padding-bottom: 20px; }
-        
-        /* 文章小标题 H2 */
-        .reader-content h2 { 
-            font-size: 20px; 
-            margin-top: 40px; 
-            margin-bottom: 15px; 
-            color: var(--primary); /* 🔵 强制蓝色 */
-            position: relative; 
-            padding-left: 12px; 
-        }
+        .reader-content h2 { font-size: 20px; margin-top: 40px; margin-bottom: 15px; color: var(--primary); position: relative; padding-left: 12px; }
         .reader-content h2::before { content: ''; position: absolute; left: 0; top: 5px; height: 18px; width: 3px; background: var(--primary); }
-        
         .reader-content p { font-size: 17px; line-height: 1.8; margin-bottom: 20px; color: #333; text-align: justify; }
-        
-        /* 🖼️ 图片尺寸优化 (短边逻辑) */
-        .reader-content img { 
-            display: block;
-            margin: 20px auto;  /* 居中 */
-            max-width: 100%;    /* 宽度不超过屏幕 */
-            max-height: 600px;  /* 🔴 高度限制：不管多长的图，最高600px */
-            width: auto;        /* 宽度自动，保持比例 */
-            height: auto;       /* 高度自动 */
-            border-radius: 4px; 
-            object-fit: contain; /* 保证图片完整显示不被裁剪 */
-        }
-        
-        /* 引用块 Blockquote */
-        .reader-content blockquote { 
-            border-left: 4px solid var(--primary); /* 🔵 蓝色左边框 */
-            margin: 25px 0; 
-            padding: 15px 20px; 
-            background: #f0f5ff; /* 极淡蓝背景 */
-            color: #555; 
-            font-style: italic; 
-            font-size: 15px; 
-            border-radius: 0 4px 4px 0;
-        }
+        .reader-content img { display: block; margin: 20px auto; max-width: 100%; max-height: 600px; width: auto; height: auto; border-radius: 4px; object-fit: contain; }
+        .reader-content blockquote { border-left: 4px solid var(--primary); margin: 25px 0; padding: 15px 20px; background: #f0f5ff; color: #555; font-style: italic; font-size: 15px; border-radius: 0 4px 4px 0; }
 
         /* 移动端适配 */
         @media screen and (max-width: 768px) {
@@ -116,7 +79,6 @@
             .user-name { font-size: 24px; }
             .container { padding: 0 15px 80px; }
             .post-card { margin-bottom: 40px; }
-            /* 手机上图片高度限制稍微小一点，防刷屏 */
             .reader-content img { max-height: 400px; }
         }
     </style>
@@ -138,7 +100,7 @@
 
     <div class="container">
         <div class="search-wrapper">
-            <input type="text" id="searchInput" class="search-input" placeholder="Search..." oninput="handleSearch()">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search title or content..." oninput="handleSearch()">
             <div class="search-icon"></div>
         </div>
         <div id="posts-container"></div>
@@ -154,9 +116,188 @@
 
     <script>
         const blogData = [
+                {
+                id: "post-8",
+                title: "HTML 特殊符号速查表 (详解版)",
+                date: "Dec 14, 2025",
+                cover: "", 
+                desc: "为什么键盘上的符号不能直接用？整理了最常用的 HTML 字符实体与原理解析...",
+                content: `
+                    <h1>HTML 特殊符号速查表 (详解版)</h1>
+                    <div class="meta">Published on Dec 14, 2025</div>
+                    
+                    <p>你是否遇到过这种情况：在代码里写了多个空格，网页上却只显示一个？或者写了“&lt;”符号，后面的文字突然全都不见了？</p>
+                    <p>这是因为浏览器把某些符号当成了“指令”。为了显示这些符号本身，我们需要使用<b>字符实体 (HTML Entities)</b>，也就是符号的“替身”。</p>
+
+                    <h2>1. 基础三巨头：防止代码崩溃</h2>
+                    <p>这三个符号是 HTML 语法的基石，直接使用会导致浏览器解析错误，必须使用替身。</p>
+                    
+                    <h3>🔵 &amp;lt; (小于号)</h3>
+                    <ul>
+                        <li><b>本尊</b>：<code>&lt;</code> (Less Than)</li>
+                        <li><b>代码写法</b>：<code>&amp;lt;</code></li>
+                        <li><b>为什么</b>：浏览器看到 <code>&lt;</code> 会以为这是一个 HTML 标签的开始（比如 &lt;h1&gt;）。如果你只是想表达“3 小于 5”，必须写成 <code>3 &amp;lt; 5</code>。</li>
+                    </ul>
+
+                    <h3>🔵 &amp;gt; (大于号)</h3>
+                    <ul>
+                        <li><b>本尊</b>：<code>&gt;</code> (Greater Than)</li>
+                        <li><b>代码写法</b>：<code>&amp;gt;</code></li>
+                        <li><b>为什么</b>：用于闭合 HTML 标签。为了避免混淆，建议在正文中一律使用替身。</li>
+                    </ul>
+
+                    <h3>🔵 &amp;amp; (和号)</h3>
+                    <ul>
+                        <li><b>本尊</b>：<code>&amp;</code> (Ampersand)</li>
+                        <li><b>代码写法</b>：<code>&amp;amp;</code></li>
+                        <li><b>为什么</b>：这是新手最容易踩的坑！因为所有的特殊符号代码都是以 <code>&amp;</code> 开头的。如果你直接写 <code>Tom & Jerry</code>，浏览器会等待你输入后面的代码，从而导致显示异常。</li>
+                    </ul>
+
+                    <h2>2. 排版神器：控制看不见的空白</h2>
+                    
+                    <h3>🔵 &amp;nbsp; (不换行空格)</h3>
+                    <ul>
+                        <li><b>本尊</b>：键盘上的空格键</li>
+                        <li><b>代码写法</b>：<code>&amp;nbsp;</code></li>
+                        <li><b>为什么</b>：HTML 有一个特性叫“空白折叠”，无论你在代码里敲多少个空格，浏览器只会显示 1 个。</li>
+                        <li><b>用法</b>：如果你想手动空两格，或者强制让两个词连在一起不被换行分开（Non-Breaking Space），就用它。</li>
+                        <li><b>示例</b>：<code>你好&amp;nbsp;&amp;nbsp;&amp;nbsp;世界</code> (显示为：你好&nbsp;&nbsp;&nbsp;世界)</li>
+                    </ul>
+
+                    <h2>3. 代码安全：引号的替身</h2>
+                    
+                    <h3>🔵 &amp;quot; (双引号)</h3>
+                    <ul>
+                        <li><b>本尊</b>：<code>"</code> (Quote)</li>
+                        <li><b>代码写法</b>：<code>&amp;quot;</code></li>
+                        <li><b>为什么</b>：HTML 的属性通常是用引号包裹的（例如 <code>class="title"</code>）。如果你的内容里也有引号，就会把属性提前截断，导致代码出错。</li>
+                    </ul>
+
+                    <h2>4. 专业符号：提升网页质感</h2>
+                    <p>这些符号键盘上很难直接打出来，用代码写不仅方便，还能保证在所有设备上都能显示。</p>
+                    <ul>
+                        <li><b>&amp;copy;</b> = &copy; (版权符号，常用于网站底部 Footer)</li>
+                        <li><b>&amp;trade;</b> = &trade; (商标符号)</li>
+                        <li><b>&amp;reg;</b> = &reg; (注册商标)</li>
+                        <li><b>&amp;times;</b> = &times; (乘号，比键盘上的 x 更像数学符号)</li>
+                        <li><b>&amp;divide;</b> = &divide; (除号)</li>
+                    </ul>
+
+                    <blockquote>
+                        <b>记忆口诀：</b><br>
+                        所有的“替身”都由三部分组成：<br>
+                        1. 领头羊 <b>&amp;</b> <br>
+                        2. 英文缩写 (如 gt, lt, copy)<br>
+                        3. 结束符 <b>;</b> (分号千万别漏！)
+                    </blockquote>
+                `
+            },
+
+
+                        {
+                id: "post-7",
+                title: "新手小白必会的 HTML 标签清单",
+                date: "Dec 14, 2025",
+                cover: "", 
+                desc: "作为新手小白，不需要背下所有标签，掌握这 8 个“生存级”标签就足够走遍天下了...",
+                content: `
+                    <h1>新手小白必会的 HTML 标签清单</h1>
+                    <div class="meta">Published on Dec 14, 2025</div>
+                    
+                    <p>这些规定的名字叫 <b>HTML 标签 (HTML Tags)</b>。你可以把它们想象成给文字穿的“制服”或贴的“便利贴”。浏览器看到这些标签时，就知道该怎么显示内容了。</p>
+                    <p>不需要背下所有标签，只需要掌握以下 8 个“生存级”标签：</p>
+
+                    <h2>1. 标题家族：&lt;h1&gt; 到 &lt;h6&gt;</h2>
+                    <p>用来区分文章的层级，就像报纸的排版。</p>
+                    <ul>
+                        <li><b>&lt;h1&gt;</b>：一级标题。通常一篇文章只用一次（做大标题）。</li>
+                        <li><b>&lt;h2&gt;</b>：二级标题。文章里的主要章节。</li>
+                        <li><b>&lt;h3&gt;</b>：三级标题。章节里的小分段。</li>
+                    </ul>
+
+                    <h2>2. 正文段落：&lt;p&gt;</h2>
+                    <p><b>含义</b>：Paragraph（段落）。</p>
+                    <p><b>作用</b>：绝大多数的普通文字都要放在这里面。浏览器会自动在段落之间留出一点空隙。</p>
+
+                    <h2>3. 换行与分割：&lt;br&gt; 和 &lt;hr&gt;</h2>
+                    <p>这两个标签很特殊，不需要结束标签。</p>
+                    <ul>
+                        <li><b>&lt;br&gt;</b>：强制换行。如果你不想分段，只想另起一行时使用。</li>
+                        <li><b>&lt;hr&gt;</b>：水平分割线。会在页面画一条横线，把内容隔开。</li>
+                    </ul>
+
+                    <h2>4. 图片：&lt;img&gt; </h2>
+                    <p>它不包文字，而是通过“属性”来告诉浏览器图在哪。</p>
+                    <p><b>核心写法</b>：<code>&lt;img src="图片链接"&gt;</code></p>
+
+                    <h2>5. 链接：&lt;a&gt;</h2>
+                    <p>让文字可以点击，跳转到别的地方。</p>
+                    <p><b>核心写法</b>：<code>&lt;a href="网址"&gt;点击这里的文字&lt;/a&gt;</code></p>
+
+                    <h2>6. 加粗：&lt;b&gt;</h2>
+                    <p><b>&lt;b&gt;</b>：Bold（加粗）。纯粹为了让视觉变粗，起到强调作用。</p>
+
+                    <h2>7. 引用：&lt;blockquote&gt;</h2>
+                    <p>用来引用名人名言、诗句，或者你想特别突出的文字。在我的网站里，它会显示为带有蓝色左边框的灰色块。</p>
+
+                    <h2>8. 列表：&lt;ul&gt; 和 &lt;li&gt;</h2>
+                    <p>如果你想列清单，就用这个组合。</p>
+                    <ul>
+                        <li><b>&lt;ul&gt;</b>：表示这是一个列表（前面是小圆点）。</li>
+                        <li><b>&lt;li&gt;</b>：表示列表里的每一项。</li>
+                    </ul>
+
+                    <blockquote>
+                        "掌握这几个标签，你的博客排版就已经能打败 90% 的人了！"
+                    </blockquote>
+                `
+            },
+
+                        {
+                id: "post-6",
+                title: "网站架构更新日志 v2.1",
+                date: "Dec 14, 2025",
+                cover: "", 
+                desc: "优化了核心搜索算法，并修复了数个导致渲染异常的关键 Bug...",
+                content: `
+                    <h1>网站架构更新日志 v2.1</h1>
+                    <div class="meta">Published on Dec 14, 2025</div>
+                    <p>本次更新主要集中在“内容检索体验”的深度优化，以及代码稳定性的紧急修复。</p>
+                    <h2>1. 搜索引擎进化 (Search Engine Optimization)</h2>
+                    <p>重构了核心检索逻辑，从单一的标题匹配升级为<b>全文检索</b>。系统现在会剥离 HTML 标签进行深度扫描，并引入了<b>智能摘要</b>技术——自动截取关键词前后的上下文语境，并对关键词进行<b>克莱因蓝高亮</b>，让查找内容如手术刀般精准。</p>
+                    <h2>2. 代码基石修复 (Bug Fixes)</h2>
+                    <p>修复了数据层（Data Layer）中因缺失分隔符导致的白屏阻断性问题（Syntax Error），同时修正了部分文章中未闭合的段落标签，确保了 DOM 结构的语义正确性与渲染稳定性。</p>
+                    <blockquote>"Details make perfection, and perfection is not a detail." <br> —— 细节成就完美，但完美不仅仅是细节。</blockquote>
+                `
+            },
+
+            {
+                id: "post-5",
+                title: "如何利用AI制作个人网站",
+                date: "Dec 12, 2025",
+                cover: "", 
+                desc: "不需会很很多操作，只需有想法有灵感，用好AI工具...",
+                content: `
+                    <h1>用AI制作个人网站</h1>
+                    <div class="meta">Published on Dec 12, 2025</div>
+                    <p>我制作网站这个念头，源于刷短视频提供的灵感，我惊叹ai已经进化到这种地步了，自己来尝试一下。</p>
+                    <h2>整理自我期望</h2>
+                    <p>把网站的用途、功能、风格想好，告诉ai直接让它生成</p>
+                    <h2>在实践中学习</h2>
+                    <p>回想自己从前使用工具的逻辑是怎么样的，比如说我想使用PS修图，我得先下软件，再从bilibili找一个入门教程，系统性的学完入门篇，然后再去尝试使用PS这个工具。是先系统系学习，学完再用的逻辑。</p>
+                    <p>但是随着年龄增加，不再是有闲工夫的学生了，业余时间和学习精力也大大降低，外加我对编程入门颇感困难，我暂时不考虑系统性学习编程了</p>
+                    <p>现在做的就是边干边学，先完成自己期望。ai生成后它会告诉我怎么样把这个网站上传，要注册github账号，下载vs code编写代码。说起来简单期间也是困难重重，我照着ai的教程我不一定做对，一旦遇到问题我就会把问题反馈给ai，截图也好拍照也好，上传给ai等到识别后，ai会分析我遇到的问题，我有何操作失误，有时候ai的描述我实在读不懂，那我就再简单上网查一下，看看有没有图文视频等解答，算是使用传统工具了哈哈，这么一顿操作下来，一路上遇到的问题迎刃而解。我还有个杀手锏，我有位程序员朋友，有问题可以请教他嘛，哈哈哈😂</p>
+                    <h2>AI的调教技巧</h2>
+                    <p>ai它不是特别听话，有时候还故意偷懒。问题可能在于询问方式不对，对待ai尽量要少用“你”这个字眼，它是冰冷的最强工具，拟人化会让它变笨。</p>
+                    <p>我举个例子，比如说想让ai写网站（本站之前就是这样诞生的），提示词是：请你帮我创作一个个人网站，我的需求是...，这种提问方式ai会写个般般不是很厉害的网站，外行的我看不出哪里有什么不好</p>
+                    <p>如果是这样问的，提示词：程序设计高手会怎么设计这个网站。ai说如果它是那位高手，它会从几个维度对这个网站的代码进行“降维打击”式的重构。我尼玛，弄了半天ai这家伙还是没用真本事呗，我一会日志更新一下吧，虽然我看不懂。</p>
+                    <p>插图我也是用ai自己生成的,避免侵权</p>
+                    <p>累了，暂时没时间研究了，先去干点别的，就更新到这吧。</p>
+                `
+            },
             {
                 id: "post-4",
-                title: "更新日志 v2.0",
+                title: "网站架构更新日志 v2.0",
                 date: "Dec 12, 2025",
                 cover: "images/251212.jpg", 
                 desc: "添加小小的想法，网站变得越来越像那么回事了",
@@ -173,7 +314,6 @@
                     <h2>4. 逻辑增强：自动化 (Automation)</h2>
                     <p>重写了 JavaScript 逻辑内核，实现了基于时间戳的<b>自动排序</b>与毫秒级的<b>全文检索</b>功能。让机器去处理逻辑，让人专注于创作。</p>
                     <blockquote> "Code is poetry, and simplicity is the ultimate sophistication." <br> —— 代码即诗，极简即是终极的高级。</blockquote>
-
                 `
             },
             {
@@ -190,7 +330,7 @@
                     <p>就惹毛了</p>
                     <img src="images/photo6.jpg" onerror="this.src='images/photo2.jpg'">
                     <img src="images/photo5.jpg" onerror="this.src='images/photo2.jpg'">
-                    <blockquote>雨は いつか止むのでしょうか ずいぶん長い間 冷たい，<br>------这雨是否终有一天将会停下 它已冰冷地下了太长太久。</blockquote>
+                    <blockquote>雨は いつか止むのでしょうか ずいぶん長い間 冷たい，<br> —— 这雨是否终有一天将会停下 它已冰冷地下了太长太久。</blockquote>
                 `
             },
             {
@@ -206,50 +346,12 @@
                     <img src="images/photo1.jpg">
                     <h2>少即是多 (Less is More)</h2>
                     <p>在信息爆炸的时代，我们每天接收太多的噪音。我希望这个个人网站能像一个安静的避风港。</p>
-                    <blockquote>"完美不是在没有什么可以添加的时候达到的，而是在没有什么可以去掉的时候达到的。" <br> ------圣埃克苏佩里</blockquote>
+                    <blockquote>"完美不是在没有什么可以添加的时候达到的，而是在没有什么可以去掉的时候达到的。" <br> —— 圣埃克苏佩里</blockquote>
                 `
-            },
-            {
-                id: "post-2",
-                title: "如何用 VS Code 搭建个人博客",
-                date: "Dec 10, 2025",
-                cover: "", 
-                desc: "不需要复杂的服务器，只需要一个 GitHub 账号和 VS Code，你就能拥有属于自己的角落...",
-                content: `
-                    <h1>如何用 VS Code 搭建个人博客</h1>
-                    <div class="meta">Published on Dec 10, 2025</div>
-                    <p>这是一个测试文章。你可以在这里写很长的内容。</p>
-                    <h2>第一步：准备工作</h2>
-                    <p>下载 VS Code，安装 Live Server 插件。</p>
-                `
-            },
-            {
-                id: "post-5",
-                title: "如何利用AI制作个人网站",
-                date: "Dec 12, 2025",
-                cover: "", 
-                desc: "不需会很很多操作，只需有想法有灵感，用好AI工具...",
-                content: `
-                    <h1>用AI制作个人网站</h1>
-                    <div class="meta">Published on Dec 12, 2025</div>
-                    <p>我制作网站这个念头，源于刷短视频提供的灵感，我惊叹ai已经进化到这种地步了，自己来尝试一下。</p>
-                    <h2>整理自我期望</h2>
-                    <p>把网站的用途、功能、风格想好，告诉ai直接让它生成</p>
-                    <h2>在实践中学习</h2>
-                    <p>回想自己从前使用工具的逻辑是怎么样的，比如说我想使用PS修图，我得先下软件，再从bilibili找一个入门教程，系统性的学完入门篇，然后再去尝试使用PS这个工具。是先系统系学习，学完再用的逻辑。</p>
-                    <p>但是随着年龄增加，不再是有闲工夫的学生了，业余时间和学习精力也大大降低，外加我对编程入门颇感困难，我暂时不考虑系统性学习编程了<p>
-                    <p>现在做的就是边干边学，先完成自己期望。ai生成后它会告诉我怎么样把这个网站上传，要注册github账号，下载vs code编写代码。说起来简单期间也是困难重重，我照着ai的教程我不一定做对，一旦遇到问题我就会把问题反馈给ai，截图也好拍照也好，上传给ai等到识别后，ai会分析我遇到的问题，我有何操作失误，有时候ai的描述我实在读不懂，那我就再简单上网查一下，看看有没有图文视频等解答，算是使用传统工具了哈哈，这么一顿操作下来，一路上遇到的问题迎刃而解。我还有个杀手锏，我有位程序员朋友，有问题可以请教他嘛，哈哈哈😂<p>
-                    <h2>AI的调教技巧</h2>
-                    <p>ai它不是特别听话，有时候还故意偷懒。问题可能在于询问方式不对，对待ai尽量要少用“你”这个字眼，它是冰冷的最强工具，拟人化会让它变笨。<p>
-                    <p>我举个例子，比如说想让ai写网站（本站之前就是这样诞生的），提示词是：请你帮我创作一个个人网站，我的需求是...，这种提问方式ai会写个般般不是很厉害的网站，外行的我看不出哪里有什么不好<p>
-                    <p>如果是这样问的，提示词：程序设计高手会怎么设计这个网站。ai说如果它是那位高手，它会从几个维度对这个网站的代码进行“降维打击”式的重构。我尼玛，弄了半天ai这家伙还是没用真本事呗，我一会日志更新一下吧，虽然我看不懂。<p>
-                    <p>插图我也是用ai自己生成的,避免侵权<p>
-                    <p>累了，暂时没时间研究了，先去干点别的，就更新到这吧。
-                `
-            },
-        
+            }
         ];
 
+        // === 核心引擎 ===
         const container = document.getElementById('posts-container');
 
         function init() {
@@ -257,16 +359,54 @@
             renderPosts(blogData);
         }
 
-        function renderPosts(data) {
+        // --- 1. HTML剥离工具 (只搜文字，不搜代码) ---
+        function stripHtml(html) {
+            let tmp = document.createElement("DIV");
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || "";
+        }
+
+        // --- 2. 智能摘要 (截取上下文 + 高亮) ---
+        function getSmartSnippet(fullText, keyword) {
+            const lowerText = fullText.toLowerCase();
+            const lowerKey = keyword.toLowerCase();
+            const index = lowerText.indexOf(lowerKey);
+
+            if (index === -1) return null;
+
+            const start = Math.max(0, index - 20);
+            const end = Math.min(fullText.length, index + lowerKey.length + 50);
+            
+            let snippet = fullText.substring(start, end);
+            if (start > 0) snippet = "..." + snippet;
+            if (end < fullText.length) snippet = snippet + "...";
+
+            const regex = new RegExp(`(${keyword})`, 'gi');
+            return snippet.replace(regex, '<span class="search-highlight">$1</span>');
+        }
+
+        // --- 3. 渲染函数 (支持搜索高亮) ---
+        function renderPosts(data, highlightKeyword = null) {
             container.innerHTML = "";
             
             if(data.length === 0) {
-                container.innerHTML = `<div style="text-align:center; color:#999; margin-top:50px;">No posts found.</div>`;
+                container.innerHTML = `<div style="text-align:center; color:#999; margin-top:50px;">No matches found.</div>`;
                 return;
             }
 
             data.forEach(post => {
+                let displayDesc = post.desc;
                 let imgHTML = '';
+
+                // 如果在搜素，尝试从正文提取包含关键词的句子
+                if (highlightKeyword) {
+                    const plainText = stripHtml(post.content);
+                    const snippet = getSmartSnippet(plainText, highlightKeyword);
+                    if (snippet) {
+                        displayDesc = snippet; 
+                    }
+                }
+
                 if (post.cover && post.cover !== "") {
                     imgHTML = `<img src="${post.cover}" class="post-cover-thumb" loading="lazy" onerror="this.style.display='none'">`;
                 }
@@ -276,7 +416,7 @@
                         <div class="post-meta">${post.date}</div>
                         <h3 class="post-title">${post.title}</h3>
                         ${imgHTML}
-                        <div class="post-excerpt">${post.desc}</div>
+                        <div class="post-excerpt">${displayDesc}</div>
                         <span class="read-more-btn">Read Article</span>
                     </div>
                 `;
@@ -284,14 +424,25 @@
             });
         }
 
+        // --- 4. 搜索处理 (全文检索) ---
         function handleSearch() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = blogData.filter(post => 
-                post.title.toLowerCase().includes(query) || 
-                post.date.toLowerCase().includes(query) || 
-                post.desc.toLowerCase().includes(query)
-            );
-            renderPosts(filtered);
+            const query = document.getElementById('searchInput').value.trim();
+            
+            if (!query) {
+                init();
+                return;
+            }
+
+            const lowerQuery = query.toLowerCase();
+            const filtered = blogData.filter(post => {
+                const plainContent = stripHtml(post.content).toLowerCase();
+                return post.title.toLowerCase().includes(lowerQuery) || 
+                       post.date.toLowerCase().includes(lowerQuery) || 
+                       post.desc.toLowerCase().includes(lowerQuery) ||
+                       plainContent.includes(lowerQuery);
+            });
+
+            renderPosts(filtered, query);
         }
 
         function openArticle(id) {
