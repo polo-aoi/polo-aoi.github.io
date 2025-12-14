@@ -9,20 +9,22 @@
     <style>
         /* --- 1. 全局配置 --- */
         :root {
-            --primary: #0044cc;      /* 灵魂色：克莱因蓝 */
+            --primary: #0044cc;      /* 克莱因蓝 */
             --bg-color: #ffffff;
-            --text-main: #1a1a1a;    /* 高级碳素黑 */
+            --text-main: #1a1a1a;
             --text-light: #888888;
             --line-color: #f5f5f5;
             --tag-bg: #f8f8f8;
-            --watermark-color: rgba(0, 0, 0, 0.03);
+            --watermark-color: rgba(0, 0, 0, 0.03); /* 极淡背景色 */
         }
 
-        /* 背景水印 */
+        /* ✨ 核心背景水印 (Target Position) */
+        /* 它静静地待在上方 25% 的位置 */
         body::before {
             content: '无限进步';
             position: fixed;
-            top: 50%; left: 50%;
+            top: 25%; 
+            left: 50%;
             transform: translate(-50%, -50%);
             font-size: 15vw; 
             font-weight: 900;
@@ -36,21 +38,30 @@
 
         body { margin: 0; padding: 0; background-color: var(--bg-color); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: var(--text-main); line-height: 1.8; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
 
-        /* --- 开屏动画 (终极丝滑版) --- */
+        /* --- 开屏动画层 --- */
         .opening-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: #fff;
             z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0;
             pointer-events: none;
+            /* 遮罩淡出动画保持不变 */
             animation: fadeOutOverlay 0.8s ease-out 1.8s forwards;
         }
 
         @keyframes fadeOutOverlay { to { opacity: 0; visibility: hidden; } }
+
+        /* ⚡️ 新增：开屏文字的包裹容器 */
+        /* 它的作用是把文字精准地定位到和背景水印一模一样的位置 */
+        .opening-wrapper {
+            position: absolute;
+            top: 25%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 0;
+            white-space: nowrap;
+        }
 
         .opening-char {
             font-size: 15vw; 
@@ -59,10 +70,13 @@
             font-family: "Songti SC", "Noto Serif SC", serif;
             letter-spacing: 0;
             opacity: 0;
-            transform-origin: center center;
+            /* 取消了 transform-origin，因为不再需要大幅度位移 */
+            
+            /* 组合动画：上浮出现 -> 原地变身 */
             animation: 
                 floatIn 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) forwards,
-                morphIntoWatermark 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) 1.2s forwards;
+                /* ⚡️ 改动：使用新的 morphOnly 动画 */
+                morphOnly 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) 1.2s forwards;
         }
         
         .char-1 { animation-delay: 0.05s, 1.2s; }
@@ -70,14 +84,24 @@
         .char-3 { animation-delay: 0.15s, 1.2s; }
         .char-4 { animation-delay: 0.2s, 1.2s; }
 
+        /* 阶段一：上浮出现 (保持黑色，略小) - 相对自身位置的小幅浮动 */
         @keyframes floatIn { 
             0% { opacity: 0; transform: translateY(50px) scale(0.85); } 
             100% { opacity: 1; transform: translateY(0) scale(0.85); } 
         }
 
-        @keyframes morphIntoWatermark { 
-            0% { transform: translateY(0) scale(0.85); color: #000; }
-            100% { transform: translateY(0) scale(1); color: var(--watermark-color); } 
+        /* ⚡️ 改动：阶段二：原地变身 (不再向上飞行) */
+        @keyframes morphOnly { 
+            0% { 
+                /* 起始：在当前位置，0.85倍大，黑色 */
+                transform: translateY(0) scale(0.85); 
+                color: #000; 
+            }
+            100% { 
+                /* 结束：在当前位置，1.0倍大，淡灰色 (完美重合) */
+                transform: translateY(0) scale(1); 
+                color: var(--watermark-color); 
+            } 
         }
 
         /* --- 主内容包裹层 --- */
@@ -91,9 +115,16 @@
         }
 
         /* --- 头部区域 --- */
-        .header { padding-top: 100px; margin-bottom: 60px; position: relative; }
+        .header { 
+            /* 巨大的顶部留白，确保内容在水印下方 */
+            padding-top: 55vh; 
+            margin-bottom: 60px; 
+            position: relative; 
+        }
+        
         .user-wrapper { max-width: 700px; margin: 0 auto; position: relative; padding: 0 20px; z-index: 10; }
 
+        /* 名片卡片 */
         .user-card {
             background: #ffffff;
             box-shadow: 0 20px 60px rgba(0,0,0,0.04); 
@@ -103,13 +134,15 @@
             align-items: center; 
             gap: 35px;
             transition: transform 0.3s ease;
+            position: relative; 
+            z-index: 2; /* 确保遮挡背景 */
         }
         .user-card:hover { transform: translateY(-2px); }
 
         .avatar { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; background-color: #f8f8f8; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
         .user-text { flex-grow: 1; }
-        .user-name { font-size: 30px; font-weight: 900; color: #000; letter-spacing: -0.5px; margin-bottom: 12px; line-height: 1; }
+        .user-name { font-size: 30px; font-weight: 900; color: #1a1a1a; letter-spacing: -0.5px; margin-bottom: 12px; line-height: 1; }
         
         .user-motto {
             font-family: "Songti SC", "Noto Serif SC", serif;
@@ -123,9 +156,27 @@
         }
 
         /* --- 容器 --- */
-        .container { max-width: 700px; margin: 0 auto; padding: 0 20px; padding-bottom: 100px; }
+        .container { 
+            max-width: 700px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+            padding-bottom: 100px;
+            position: relative;
+            z-index: 2; /* 确保遮挡背景 */
+            background-color: transparent; 
+        }
         
-        .toolbar-container { margin-bottom: 40px; position: relative; }
+        .post-card { 
+            background-color: #ffffff;
+            margin-bottom: 40px; 
+            cursor: pointer; 
+            border-bottom: 1px solid var(--line-color); 
+            padding-bottom: 25px; 
+            transition: all 0.3s; 
+        }
+        .post-card:hover { transform: translateY(-3px); }
+
+        .toolbar-container { margin-bottom: 40px; position: relative; background: #fff; border-radius: 12px; }
         .search-row { display: flex; gap: 10px; align-items: center; }
         .search-wrapper { position: relative; flex-grow: 1; }
         .search-input { width: 100%; padding: 12px 20px 12px 45px; border: 1px solid var(--line-color); border-radius: 12px; background-color: #fff; font-size: 15px; color: #333; outline: none; transition: all 0.3s ease; box-sizing: border-box; -webkit-appearance: none; }
@@ -147,19 +198,17 @@
         .tag-option:hover { background-color: #eef2ff; color: var(--primary); }
         .tag-option.selected { background-color: var(--primary); color: #fff; }
 
-        .post-card { margin-bottom: 40px; cursor: pointer; border-bottom: 1px solid var(--line-color); padding-bottom: 25px; transition: all 0.3s; }
-        .post-card:hover { transform: translateY(-3px); }
         .card-header-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
         .post-meta { font-size: 13px; color: var(--text-light); font-family: Georgia, serif; font-style: italic; }
         .card-tag { font-size: 11px; color: var(--primary); background-color: rgba(0, 68, 204, 0.05); padding: 2px 8px; border-radius: 4px; font-weight: 600; letter-spacing: 0.5px; }
-        .post-title { font-size: 22px; font-weight: 800; margin: 0 0 10px 0; line-height: 1.3; color: #000; transition: color 0.2s;}
+        .post-title { font-size: 22px; font-weight: 800; margin: 0 0 10px 0; line-height: 1.3; color: #1a1a1a; transition: color 0.2s;}
         .post-card:hover .post-title { color: var(--primary); }
         .post-excerpt { font-size: 15px; color: #555; line-height: 1.7; margin-bottom: 15px; } 
         .search-highlight { color: var(--primary); font-weight: bold; background: rgba(0, 68, 204, 0.05); padding: 0 2px; border-radius: 2px; }
         .post-cover-thumb { width: 100%; height: 240px; object-fit: cover; border-radius: 12px; margin-bottom: 18px; background-color: #f8f8f8; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .read-more-btn { color: var(--primary); font-size: 13px; font-weight: 700; letter-spacing: 0.5px; }
         
-        /* --- 阅读器 (✨ 高级黑金版) --- */
+        /* --- 阅读器 --- */
         #article-reader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 100; overflow-y: auto; animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .reader-nav { max-width: 700px; margin: 0 auto; padding: 20px; position: sticky; top: 0; background: rgba(255,255,255,0.98); border-bottom: 1px solid var(--line-color); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); }
@@ -167,37 +216,15 @@
         .back-btn::before { content: '←'; margin-right: 8px; font-size: 20px; }
         .reader-content { max-width: 680px; margin: 40px auto; padding: 0 20px 100px; }
         
-        /* ✨ 1. 大标题：使用高级碳素黑，而非纯黑 */
-        .reader-content h1 { 
-            font-size: 32px; 
-            margin-bottom: 10px; 
-            line-height: 1.3; 
-            color: #1a1a1a;  /* Carbon Black */
-            font-weight: 900; 
-        }
-        
+        .reader-content h1 { font-size: 32px; margin-bottom: 10px; line-height: 1.3; color: #1a1a1a; font-weight: 900; }
         .reader-content .meta { color: var(--text-light); font-size: 13px; margin-bottom: 40px; border-bottom: 1px solid var(--line-color); padding-bottom: 25px; }
         
-        /* ✨ 2. 小标题：黑字 + 蓝线点缀 = 设计感 */
         .reader-content h2 { 
-            font-size: 22px; 
-            margin-top: 50px; 
-            margin-bottom: 20px; 
-            color: #1a1a1a; /* 标题文字是黑的 */
-            font-weight: 800; 
-            position: relative;
-            padding-left: 12px; /* 留出空隙 */
+            font-size: 22px; margin-top: 50px; margin-bottom: 20px; color: #1a1a1a; font-weight: 800; 
+            position: relative; padding-left: 12px;
         }
-        
-        /* 这个伪元素就是“设计感”的来源 */
         .reader-content h2::before { 
-            content: ''; 
-            position: absolute; 
-            left: 0; top: 4px; 
-            height: 24px; 
-            width: 4px; 
-            background: var(--primary); /* 只有这一小条是克莱因蓝 */
-            border-radius: 2px;
+            content: ''; position: absolute; left: 0; top: 4px; height: 24px; width: 4px; background: var(--primary); border-radius: 2px;
         }
 
         .reader-content p { font-size: 17px; line-height: 1.85; margin-bottom: 25px; color: #333; }
@@ -206,7 +233,7 @@
         .reader-content code { background: #f4f4f4; padding: 3px 6px; border-radius: 4px; font-family: "Menlo", "Consolas", monospace; color: #d63384; font-size: 0.9em; }
 
         @media screen and (max-width: 768px) {
-            .header { padding-top: 60px; margin-bottom: 40px; }
+            .header { padding-top: 60vh; margin-bottom: 40px; }
             .user-card { flex-direction: column; text-align: center; gap: 20px; padding: 30px 20px; align-items: center;}
             .container { padding: 0 15px 80px; }
             .reader-content img { max-height: 400px; }
@@ -217,10 +244,12 @@
 <body>
 
     <div class="opening-overlay">
-        <span class="opening-char char-1">无</span>
-        <span class="opening-char char-2">限</span>
-        <span class="opening-char char-3">进</span>
-        <span class="opening-char char-4">步</span>
+        <div class="opening-wrapper">
+            <span class="opening-char char-1">无</span>
+            <span class="opening-char char-2">限</span>
+            <span class="opening-char char-3">进</span>
+            <span class="opening-char char-4">步</span>
+        </div>
     </div>
 
     <div class="main-content-wrapper">
@@ -266,7 +295,7 @@
 
     <script>
         const blogData = [
-                        {
+            {
                 id: "post-10",
                 title: "网站架构更新日志 v2.2：禅意与负熵",
                 date: "Dec 14, 2025",
@@ -276,32 +305,16 @@
                 content: `
                     <h1>网站架构更新日志 v2.2</h1>
                     <div class="meta">Published on Dec 14, 2025</div>
-                    
                     <p>这是本站建立以来跨度最大的一次视觉重构。我放弃了流行的“磨砂玻璃”与“流体渐变”，选择了一条更难的路——<b>“禅意极简” (Zen Minimalism)</b>。</p>
-
-                    <h2>1. 视觉重构：文字即信仰</h2>
+                    <h2>1. 视觉重构</h2>
                     <p>我删除了首页的 Banner 图片。现在，屏幕中央只有“无限进步”四个大字。它们既是背景水印，也是我的精神图腾。</p>
-                    <p>这种设计灵感来源于<b>“少即是多”</b>。当干扰元素被剥离，留下的才是最珍贵的信息。</p>
-
-                    <h2>2. 交互核心：视觉接力 (Visual Relay)</h2>
-                    <p>为了让极简不显简陋，我对开屏动画进行了物理级的调优：</p>
-                    <ul>
-                        <li><b>无缝衍变</b>：开屏的黑色实心字在放大的瞬间，精准地“溶解”为背景的淡灰色水印。</li>
-                        <li><b>时间重叠</b>：在开屏层消失的同时，主页内容已经开始上浮。这种<b>并行处理</b>让页面加载感觉不到任何停顿。</li>
-                    </ul>
-
-                    <h2>3. 逻辑修正: 文章排序</h2>
-                    <p>修复了文章排序系统的核心 Bug。引入了时间戳比对逻辑，确保无论数据录入顺序如何，最新的思考永远置顶。这也是一种代码层面的“创生负熵”。</p>
-
-                    <h2>4. 色彩美学：黑底蓝芯</h2>
-                    <p>全站字体调整为 <b>Carbon Black (#1a1a1a)</b>，仅在标题装饰线保留了<b>克莱因蓝</b>。这种克制的配色，让阅读体验更加沉浸。</p>
-
-                    <blockquote>
-                        "轮回非循环，乃螺旋；直面熵增，创生负熵。"
-                    </blockquote>
+                    <h2>2. 交互核心</h2>
+                    <p>为了让极简不显简陋，我对开屏动画进行了物理级的调优：开屏的黑色实心字不再向上飞行，而是直接在最终位置出现，精准地“溶解”为背景的淡灰色水印。</p>
+                    <h2>3. 逻辑修正</h2>
+                    <p>修复了文章排序系统的核心 Bug。引入了时间戳比对逻辑，确保无论数据录入顺序如何，最新的思考永远置顶。</p>
+                    <blockquote>"轮回非循环，乃螺旋；直面熵增，创生负熵。"</blockquote>
                 `
             },
-
             {
                 id: "post-9",
                 title: "网站架构更新日志 v2.1：体验进化",
@@ -312,30 +325,14 @@
                 content: `
                     <h1>网站架构更新日志 v2.1</h1>
                     <div class="meta">Published on Dec 14, 2025</div>
-                    
                     <p>距离 v2.0 重构仅仅两天，我对网站的交互体验进行了密集的迭代。本次 v2.1 更新主要致力于让信息获取变得更加“顺滑”与“优雅”。</p>
-
                     <h2>1. 交互升级：收纳式标签 (Tag Storage)</h2>
                     <p>为了在增加分类功能的同时保持极简设计，我引入了<b>“收纳式交互”</b>逻辑。</p>
-                    <p>标签面板平时被隐藏在 "Tags" 按钮中，点击才会滑出。这种设计既保留了强大的筛选功能，又没有破坏页面的留白与秩序感。</p>
-
                     <h2>2. 检索内核：全文高亮 (Deep Search)</h2>
-                    <p>搜索体验得到了质的飞跃。不再局限于标题匹配，系统现在支持<b>全文检索</b>，并实装了两个关键特性：</p>
-                    <ul>
-                        <li><b>智能语境</b>：自动截取关键词前后的句子，让你知道它在讲什么。</li>
-                        <li><b>视觉聚焦</b>：关键词自动标记为<b>克莱因蓝</b>，一眼锁定核心内容。</li>
-                    </ul>
-
+                    <p>搜索体验得到了质的飞跃。不再局限于标题匹配，系统现在支持<b>全文检索</b>。</p>
                     <h2>3. 路由系统 (Routing)</h2>
-                    <p>补全了单页应用 (SPA) 的最后一块拼图。现在，无论是点击文章还是筛选标签，浏览器地址栏都会同步更新（如 <code>?post=id</code>）。这意味着你可以直接分享某个具体的页面给朋友，浏览器的“后退”按钮也能正常工作了。</p>
-
-                    <h2>4. 稳定性修复</h2>
-                    <p>修复了数据层解析错误导致的白屏问题，并对全站代码进行了原子化重构。</p>
-
-                    <blockquote>
-                        "Iteration is the key to perfection." <br>
-                        (迭代是通往完美的钥匙。)
-                    </blockquote>
+                    <p>补全了单页应用 (SPA) 的最后一块拼图。现在，无论是点击文章还是筛选标签，浏览器地址栏都会同步更新（如 <code>?post=id</code>）。</p>
+                    <blockquote>"Iteration is the key to perfection." <br>(迭代是通往完美的钥匙。)</blockquote>
                 `
             },
             {
@@ -352,21 +349,22 @@
                     <p>这是因为浏览器把某些符号当成了“指令”。为了显示这些符号本身，我们需要使用<b>字符实体 (HTML Entities)</b>，也就是符号的“替身”。</p>
                     <h2>1. 基础三巨头：防止代码崩溃</h2>
                     <p>这三个符号是 HTML 语法的基石，直接使用会导致浏览器解析错误，必须使用替身。</p>
-                    <h3>&amp;lt; (小于号)</h3>
+                    <h3>🔵 &amp;lt; (小于号)</h3>
                     <ul><li><b>本尊</b>：<code>&lt;</code> (Less Than)</li><li><b>代码写法</b>：<code>&amp;lt;</code></li></ul>
-                    <h3>&amp;gt; (大于号)</h3>
+                    <h3>🔵 &amp;gt; (大于号)</h3>
                     <ul><li><b>本尊</b>：<code>&gt;</code> (Greater Than)</li><li><b>代码写法</b>：<code>&amp;gt;</code></li></ul>
-                    <h3>&amp;amp; (和号)</h3>
+                    <h3>🔵 &amp;amp; (和号)</h3>
                     <ul><li><b>本尊</b>：<code>&amp;</code> (Ampersand)</li><li><b>代码写法</b>：<code>&amp;amp;</code></li></ul>
                     <h2>2. 排版神器</h2>
-                    <h3>&amp;nbsp; (不换行空格)</h3>
+                    <h3>🔵 &amp;nbsp; (不换行空格)</h3>
                     <ul><li><b>代码写法</b>：<code>&amp;nbsp;</code></li><li><b>用途</b>：强制空格，防止自动换行。</li></ul>
                     <h2>3. 代码安全</h2>
-                    <h3>&amp;quot; (双引号)</h3>
+                    <h3>🔵 &amp;quot; (双引号)</h3>
                     <ul><li><b>代码写法</b>：<code>&amp;quot;</code></li></ul>
                 `
             },
             {
+                /* ✨✨✨ Post-7 完整修复版 (8个技巧) ✨✨✨ */
                 id: "post-7",
                 title: "新手小白必会的 HTML 标签清单",
                 date: "Dec 14, 2025",
@@ -376,15 +374,33 @@
                 content: `
                     <h1>新手小白必会的 HTML 标签清单</h1>
                     <div class="meta">Published on Dec 14, 2025</div>
-                    <p>不需要背下所有标签，只需要掌握以下 8 个“生存级”标签：</p>
+                    <p>HTML 标签浩如烟海，但对于新手来说，不需要背下所有标签。掌握以下 <b>8 个“生存级”标签</b>，就足够你搭建出 90% 的网页结构了：</p>
+                    
                     <h2>1. 标题家族：&lt;h1&gt; 到 &lt;h6&gt;</h2>
-                    <p>用来区分文章的层级，就像报纸的排版。</p>
+                    <p>用来区分文章的层级，就像报纸的排版。<code>h1</code> 最大（通常是文章标题，一个页面最好只用一个），<code>h6</code> 最小。</p>
+                    
                     <h2>2. 正文段落：&lt;p&gt;</h2>
-                    <p>绝大多数的普通文字都要放在这里面。</p>
+                    <p>Paragraph 的缩写。绝大多数的普通文字都要放在这里面，浏览器会自动在段落之间留出空隙。</p>
+                    
                     <h2>3. 图片：&lt;img&gt;</h2>
-                    <p><b>核心写法</b>：<code>&lt;img src="图片链接"&gt;</code></p>
+                    <p><b>核心写法</b>：<code>&lt;img src="图片链接"&gt;</code>。注意，它不需要结束标签。</p>
+                    
                     <h2>4. 链接：&lt;a&gt;</h2>
-                    <p><b>核心写法</b>：<code>&lt;a href="网址"&gt;点击这里的文字&lt;/a&gt;</code></p>
+                    <p>Anchor 的缩写。<b>核心写法</b>：<code>&lt;a href="网址"&gt;点击这里的文字&lt;/a&gt;</code>。它是互联网之所以互联的核心。</p>
+                    
+                    <h2>5. 万能盒子：&lt;div&gt;</h2>
+                    <p>Division 的缩写。它本身没有任何特殊样子，就是一个空的“盒子”。它是网页布局的核心，用来把其他元素打包在一起，方便排版。</p>
+                    
+                    <h2>6. 强制换行：&lt;br&gt;</h2>
+                    <p>Break 的缩写。如果你想在段落内部强行换一行，就用它。和 <code>img</code> 一样，它也不需要结束标签。</p>
+                    
+                    <h2>7. 列表：&lt;ul&gt; 和 &lt;li&gt;</h2>
+                    <p>用来创建无序列表（Unordered List）。<code>ul</code> 是外面的框，<code>li</code> 是里面的每一项。你现在看到的这个清单就是用它写的。</p>
+                    
+                    <h2>8. 行内微调：&lt;span&gt;</h2>
+                    <p>如果说 <code>div</code> 是大盒子，<code>span</code> 就是小袋子。它通常用来包裹一行文字中的<b>某几个字</b>，方便给这几个字单独加颜色或加粗。</p>
+                    
+                    <blockquote>总结：代码是给人看的，顺便给机器执行。用对标签，保持整洁！</blockquote>
                 `
             },
             {
@@ -397,19 +413,20 @@
                 content: `
                     <h1>用AI制作个人网站</h1>
                     <div class="meta">Published on Dec 12, 2025</div>
-                    <p>我制作网站这个念头，源于刷短视频提供的灵感，我惊叹ai已经进化到这种地步了，自己来尝试一下。</p>
+                    <p>我制作网站这个念头，源于刷短视频提供的灵感。我惊叹 AI 已经进化到这种地步了，作为一个化工行业的普通工人，我决定自己来尝试一下。</p>
                     <h2>整理自我期望</h2>
-                    <p>把网站的用途、功能、风格想好，告诉ai直接让它生成</p>
+                    <p>把网站的用途、功能、风格想好。我想要一个极简的、白色的、没有多余广告的角落，用来放我的摄影作品和日常思考。然后，我把这些想法直接告诉 AI。</p>
                     <h2>在实践中学习</h2>
-                    <p>回想自己从前使用工具的逻辑是怎么样的，比如说我想使用PS修图，我得先下软件，再从bilibili找一个入门教程，系统性的学完入门篇，然后再去尝试使用PS这个工具。是先系统系学习，学完再用的逻辑。</p>
-                    <p>但是随着年龄增加，不再是有闲工夫的学生了，业余时间和学习精力也大大降低，外加我对编程入门颇感困难，我暂时不考虑系统性学习编程了</p>
-                    <p>现在做的就是边干边学，先完成自己期望。ai生成后它会告诉我怎么样把这个网站上传，要注册github账号，下载vs code编写代码。说起来简单期间也是困难重重，我照着ai的教程我不一定做对，一旦遇到问题我就会把问题反馈给ai，截图也好拍照也好，上传给ai等到识别后，ai会分析我遇到的问题，我有何操作失误，有时候ai的描述我实在读不懂，那我就再简单上网查一下，看看有没有图文视频等解答，算是使用传统工具了哈哈，这么一顿操作下来，一路上遇到的问题迎刃而解。我还有个杀手锏，我有位程序员朋友，有问题可以请教他嘛，哈哈哈😂</p>
-                    <h2>AI的调教技巧</h2>
-                    <p>ai它不是特别听话，有时候还故意偷懒。问题可能在于询问方式不对，对待ai尽量要少用“你”这个字眼，它是冰冷的最强工具，拟人化会让它变笨。</p>
-                    <p>我举个例子，比如说想让ai写网站（本站之前就是这样诞生的），提示词是：请你帮我创作一个个人网站，我的需求是...，这种提问方式ai会写个般般不是很厉害的网站，外行的我看不出哪里有什么不好</p>
-                    <p>如果是这样问的，提示词：程序设计高手会怎么设计这个网站。ai说如果它是那位高手，它会从几个维度对这个网站的代码进行“降维打击”式的重构。我尼玛，弄了半天ai这家伙还是没用真本事呗，我一会日志更新一下吧，虽然我看不懂。</p>
-                    <p>插图我也是用ai自己生成的,避免侵权</p>
-                    <p>累了，暂时没时间研究了，先去干点别的，就更新到这吧。</p>
+                    <p>回想自己从前使用工具的逻辑：比如说我想使用 PS 修图，我得先下软件，再从 Bilibili 找一个入门教程，系统性地学完入门篇，然后再去尝试使用 PS。是“先学再用”的逻辑。</p>
+                    <p>但是随着年龄增加，不再是有闲工夫的学生了，业余时间和精力也大大降低。外加我对编程入门颇感困难，我暂时不考虑系统性学习编程了。</p>
+                    <p>现在做的就是<b>“边干边学” (Learning by doing)</b>。AI 生成代码后，它会告诉我怎么样把这个网站上传到 GitHub。说起来简单，期间也是困难重重。我照着 AI 的教程不一定做对，一旦遇到问题，我就截图反馈给 AI。有时候 AI 的描述我实在读不懂，那我就再简单上网查一下，或者问问我身边的程序员朋友——这算是我的“杀手锏”了，哈哈😂。</p>
+                    <h2>AI 的调教技巧</h2>
+                    <p>AI 有时候会偷懒。问题往往在于提问方式。对待 AI 尽量要少用“你”这个字眼，它是冰冷的工具，过度拟人化有时候反而效率低。</p>
+                    <p>比如：
+                    <br>❌ 提示词：请你帮我创作一个个人网站...
+                    <br>✅ 提示词：<b>你是一位世界顶级的网页设计大师，请用极简主义风格重构以下代码...</b></p>
+                    <p>换个问法，AI 就会瞬间变身，给出完全不同维度的代码。</p>
+                    <blockquote>这个网站的所有代码，包括你现在看到的这篇文章，都是我和 AI 共同协作的成果。</blockquote>
                 `
             },
             {
@@ -434,24 +451,7 @@
                     <blockquote> "Code is poetry, and simplicity is the ultimate sophistication." <br> —— 代码即诗，极简即是终极的高级。</blockquote>
                 `
             },
-            {
-                id: "post-3",
-                title: "OMG",
-                date: "Dec 11, 2025",
-                tags: ["Life"],
-                cover: "images/photo2.jpg",
-                desc: "惹毛女人你只需要这么做",
-                content: `
-                    <h1>只要这样</h1>
-                    <div class="meta">Published on Dec 11, 2025</div>
-                    <p>然后这样</p>
-                    <h2>最后</h2>
-                    <p>就惹毛了</p>
-                    <img src="images/photo6.jpg" onerror="this.src='images/photo2.jpg'">
-                    <img src="images/photo5.jpg" onerror="this.src='images/photo2.jpg'">
-                    <blockquote>雨は いつか止むのでしょうか ずいぶん長い間 冷たい，<br> —— 这雨是否终有一天将会停下 它已冰冷地下了太长太久。</blockquote>
-                `
-            },
+           
             {
                 id: "post-2",
                 title: "如何用 VS Code 搭建个人博客",
@@ -462,15 +462,40 @@
                 content: `
                     <h1>如何用 VS Code 搭建个人博客</h1>
                     <div class="meta">Published on Dec 10, 2025</div>
-                    <p>这是一个测试文章。你可以在这里写很长的内容。</p>
+                    <p>很多人觉得写代码很难，其实搭建一个最基础的静态博客只需要三步。这是我作为新手小白的实践总结。</p>
                     <h2>第一步：准备工作</h2>
-                    <p>下载 VS Code，安装 Live Server 插件。</p>
+                    <ul>
+                        <li>下载并安装 <b>VS Code</b> (Visual Studio Code)。</li>
+                        <li>注册一个 <b>GitHub</b> 账号。</li>
+                        <li>安装 VS Code 插件：<b>Live Server</b>（它可以让你实时预览网页）。</li>
+                    </ul>
                     <h2>第二步：编写 HTML</h2>
-                    <p>使用语义化的标签，让网页结构清晰。</p>
+                    <p>新建一个 <code>index.html</code> 文件，输入 <code>!</code> 然后按 Tab 键，VS Code 会自动帮你生成基础骨架。使用语义化的标签，让网页结构清晰。</p>
+                    <h2>第三步：上传 GitHub</h2>
+                    <p>创建一个名为 <code>yourname.github.io</code> 的仓库，把代码上传上去。几分钟后，你就可以通过这个网址访问你的网站了。</p>
+                    <p>这就是你现在看到的这个网站的雏形。</p>
                 `
             },
+            {
+                id: "post-1",
+                title: "为什么我选择了极简主义",
+                date: "Dec 11, 2025",
+                tags: ["Life", "Thinking"],
+                cover: "images/photo1.jpg",
+                desc: "蓝色是天空的深度，也是大海的静谧。在设计这个网站时，我刻意去掉了多余的边框和装饰...",
+                content: `
+                    <h1>为什么我选择了极简主义</h1>
+                    <div class="meta">Published on Dec 11, 2025</div>
+                    <p>我是一名化工厂污水处理工人。我的日常工作是面对复杂的管道、浑浊的液体和各种繁琐的数据指标。</p>
+                    <p>这也许就是为什么在生活中，我极度渴望<b>纯净</b>与<b>秩序</b>。</p>
+                    <h2>Blue / Photography / Minimalist</h2>
+                    <p><b>蓝色</b>是天空的深度，也是大海的静谧。它代表着冷静与逻辑。</p>
+                    <p><b>摄影</b>是减法的艺术。在取景器里，我必须排除干扰，只保留主体。这和我做这个网站的初衷一样——去除多余的边框、复杂的背景，只保留内容本身。</p>
+                    <p>在这个信息过载的时代，我想在这个小小的角落里，对抗“熵增”，创造一点点属于自己的“负熵”。</p>
+                    <p>这就是我，Polo Aoi。</p>
+                `
+            }
         ];
-
         const container = document.getElementById('posts-container');
         const tagPanel = document.getElementById('tagPanel');
         const tagGrid = document.getElementById('tagGrid');
