@@ -242,7 +242,204 @@
     </div>
 
     <script>
-        const blogData = [
+       const blogData = [
+      {
+        id: "post-13",
+        title: "【工艺手册】双膜法水处理全流程技术参数与运行规范",
+        date: "Dec 15, 2025",
+        tags: ["水处理"],
+        cover: "",
+        desc: "基于培训资料整理的完整电子台账：涵盖多介质、UF、RO三大系统的设备选型参数、标准运行条件、PID加药逻辑及详细故障诊断表。",
+        content: `
+            <h1>双膜法水处理全流程技术参数与运行规范</h1>
+            <div class="meta">整理时间：2025-12-15 | 来源：双膜培训交流.pdf</div>
+
+            <div class="intro" style="background: #f4f4f5; padding: 15px; border-left: 5px solid #007bff; margin-bottom: 20px;">
+                <p><strong>摘要：</strong>本文档详细记录了从预处理到反渗透的全流程工艺参数。内容100%源自培训资料，修正了部分笔误，适用于现场操作查阅与设备维护参照。</p>
+            </div>
+
+            <h2>一、 预处理系统 (Pre-treatment)</h2>
+            
+            <h3>1. 多介质过滤器 (Multimedia Filter)</h3>
+            <ul>
+                <li><strong>设备配置：</strong> 共4台（&phi;3.2*5.4m），3用1备。</li>
+                <li><strong>滤料结构：</strong>
+                    <ul>
+                        <li><strong>上层：</strong> 活性炭（最轻、最粗），去除大颗粒与有机物。</li>
+                        <li><strong>下层：</strong> 石英砂（最重、最细），深度拦截悬浮物。</li>
+                    </ul>
+                </li>
+                <li><strong>出水指标：</strong>
+                    <ul>
+                        <li>浊度：<strong>&lt; 3 NTU</strong> (注：资料第21页误写为31，按第52页运行要求执行)。</li>
+                        <li>悬浮物：&lt; 5 mg/L。</li>
+                        <li>COD：&lt; 40 mg/L。</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>2. 篮式过滤器 (Basket Strainer)</h3>
+            <ul>
+                <li><strong>位置：</strong> 多介质过滤器之后，作为保安过滤。</li>
+                <li><strong>维护：</strong> 需定期旋开主管底部螺塞排污，拆卸法兰盖清洗滤篮。</li>
+            </ul>
+
+            <hr>
+
+            <h2>二、 超滤系统 (Ultrafiltration, UF)</h2>
+            
+            <h3>1. 膜元件参数 (Dow SFP-2880)</h3>
+            <div class="table-container">
+                <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+                    <tr style="background: #e9ecef;"><th>参数项</th><th>规格数据</th></tr>
+                    <tr><td><strong>材质/类型</strong></td><td>PVDF / 中空纤维 / 外压式</td></tr>
+                    <tr><td><strong>孔径/精度</strong></td><td>0.03 &mu;m (截留分子量120,000道尔顿)</td></tr>
+                    <tr><td><strong>操作压力</strong></td><td>0.35 MPa</td></tr>
+                    <tr><td><strong>产水通量</strong></td><td>8000 L/H</td></tr>
+                    <tr><td><strong>耐受性</strong></td><td>耐酸、耐碱、耐高温、耐低温</td></tr>
+                </table>
+            </div>
+
+            <h3>2. 标准运行程序 (Standard Sequence)</h3>
+            <p>系统采用“产水-反洗-正洗”交替循环：</p>
+            <ul>
+                <li><strong>过滤 (Filtration)：</strong> 运行 28-29 分钟。</li>
+                <li><strong>气擦洗+反洗 (Air Scour + Backwash)：</strong>
+                    <ul>
+                        <li>时长：&gt; 30秒。</li>
+                        <li>反洗水流量：产水流速的 1 ~ 1.5 倍。</li>
+                        <li>气擦洗流量：5 Nm&sup3;/hr (气压 200kPa)。</li>
+                    </ul>
+                </li>
+                <li><strong>正冲洗 (Flush)：</strong> 时长 30秒，流量 6 m&sup3;/hr。</li>
+                <li><strong>加强反洗 (CEB)：</strong> 每运行 10-15 个周期进行一次化学加强反洗。</li>
+            </ul>
+
+            <h3>3. 运行红线</h3>
+            <ul>
+                <li><strong>进水压力：</strong> &le; 0.3 MPa (防止次氯酸钠安全阀起跳)。</li>
+                <li><strong>进水浊度：</strong> &lt; 3 NTU。</li>
+                <li><strong>清洗触发：</strong> 跨膜压差 &gt; 150 KPa 时必须离线清洗。</li>
+                <li><strong>反洗避让：</strong> 严禁2套UF系统同时反洗。</li>
+            </ul>
+
+            <hr>
+
+            <h2>三、 保安过滤器 (Cartridge Filter)</h2>
+            <ul>
+                <li><strong>滤芯规格：</strong> 5 &mu;m 精度，PP材质，40英寸长，折叠式。</li>
+                <li><strong>压差控制：</strong> 正常 &le; 0.01 MPa，最大 &le; 0.03 MPa (达到即更换)。</li>
+                <li><strong>操作提示：</strong> 更换后需灌满水加 10ppm 次氯酸钠浸泡 30分钟。</li>
+            </ul>
+
+            <hr>
+
+            <h2>四、 反渗透系统 (Reverse Osmosis, RO)</h2>
+
+            <h3>1. 膜元件参数 (Dow BW30FR-400/34i)</h3>
+            <ul>
+                <li><strong>类型：</strong> 聚酰胺复合膜，抗污染型。</li>
+                <li><strong>有效面积：</strong> 400 ft&sup2; (37 m&sup2;)。</li>
+                <li><strong>脱盐率：</strong> 稳定脱盐率 99.5%。</li>
+                <li><strong>pH范围：</strong> 连续运行 2-11，短期清洗 1-13。</li>
+            </ul>
+
+            <h3>2. 进水水质严格要求</h3>
+            <div class="alert" style="background: #fff3cd; color: #856404; padding: 10px; border: 1px solid #ffeeba;">
+                <strong>&#9888; 核心指标：</strong>
+                <ul>
+                    <li><strong>SDI15：</strong> &lt; 3 (必须控制，&gt;5时必须检查预处理)。</li>
+                    <li><strong>余氯：</strong> 0 mg/L (严禁含氯进入RO)。</li>
+                    <li><strong>水温：</strong> 5 - 35&#8451;。</li>
+                </ul>
+            </div>
+
+            <h3>3. 运行控制</h3>
+            <ul>
+                <li><strong>回收率：</strong> 设计值 75%。</li>
+                <li><strong>最小流量：</strong> &ge; 40 T/H (防止结垢)。</li>
+                <li><strong>压差清洗：</strong> 一二段压差 &gt; 150 KPa 建议清洗，最大 &lt; 300 KPa。</li>
+            </ul>
+
+            <hr>
+
+            <h2>五、 化学加药系统详解</h2>
+            <p>系统共投加4种药剂，逻辑如下表：</p>
+            <div class="table-container">
+                <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+                    <thead style="background: #007bff; color: white;">
+                        <tr>
+                            <th>药剂名称</th>
+                            <th>投加位置</th>
+                            <th>控制目标/剂量</th>
+                            <th>功能</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="2"><strong>次氯酸钠<br>(NaClO)</strong></td>
+                            <td>UF进水母管</td>
+                            <td>余氯 0.3-0.5 ppm</td>
+                            <td>杀菌，防生物污染</td>
+                        </tr>
+                        <tr>
+                            <td>UF反洗水母管</td>
+                            <td>排水余氯 5-10 ppm</td>
+                            <td>化学加强反洗(CEB)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>盐酸<br>(HCl)</strong></td>
+                            <td>UF反洗水母管</td>
+                            <td>排水浓度 300-400 ppm</td>
+                            <td>去除无机垢</td>
+                        </tr>
+                        <tr>
+                            <td><strong>亚硫酸氢钠<br>(NaHSO3)</strong></td>
+                            <td>RO给水母管</td>
+                            <td>3-5 ppm (至余氯为0)</td>
+                            <td>还原剂，保护RO膜</td>
+                        </tr>
+                        <tr>
+                            <td><strong>阻垢剂</strong></td>
+                            <td>RO给水母管</td>
+                            <td>3-5 ppm</td>
+                            <td>防止膜表面结垢</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <hr>
+
+            <h2>六、 常见故障诊断表 (Troubleshooting)</h2>
+            <p>RO系统故障快速查表：</p>
+            <div class="table-container">
+                <table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 0.9em;">
+                    <thead style="background: #6c757d; color: white;">
+                        <tr>
+                            <th>可能原因</th>
+                            <th>发生段位</th>
+                            <th>压降变化</th>
+                            <th>产水变化</th>
+                            <th>盐透过率</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>金属氧化物</strong></td><td>第一段</td><td>正常或增加</td><td>降低</td><td>正常或增加</td></tr>
+                        <tr><td><strong>胶体污染</strong></td><td>第一段</td><td>正常或增加</td><td>降低</td><td>正常或增加</td></tr>
+                        <tr><td><strong>结垢</strong></td><td>最后一段</td><td>增加</td><td>降低</td><td>增加</td></tr>
+                        <tr><td><strong>生物污染</strong></td><td>任意段</td><td>正常或增加</td><td>降低</td><td>正常或增加</td></tr>
+                        <tr><td><strong>氧化(余氯)</strong></td><td>所有段(一段重)</td><td>正常</td><td>增加</td><td>增加(水质变差)</td></tr>
+                        <tr><td><strong>O型圈泄漏</strong></td><td>随机</td><td>正常或增加</td><td>正常或增加</td><td>增加</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="warning" style="margin-top: 20px; color: red; font-weight: bold;">
+                特别警示：RO系统的浓水手动调节阀在调试完成后切记勿动！建议锁死或取下手轮，否则可能造成不可挽回的后果。
+            </div>
+        `
+    },
             {
                 id: "post-12",
                 title:"超滤离线清洗步骤",
@@ -505,7 +702,8 @@
                 `
             }
         ];
-            
+        
+
         const container = document.getElementById('posts-container');
         const tagPanel = document.getElementById('tagPanel');
         const tagGrid = document.getElementById('tagGrid');
