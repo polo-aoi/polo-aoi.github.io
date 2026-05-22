@@ -1,7 +1,5 @@
 const container = document.getElementById('posts-container');
 
-const CATEGORIES = ['开发日志', '技术文章', '摄影设计', '生活随笔', '水处理'];
-
 let currentCategory = null;
 
 function init() {
@@ -29,7 +27,7 @@ function getPublishedPosts() {
 let expandedCat = null;
 
 function getCategories() {
-    return typeof CATEGORIES !== 'undefined' ? CATEGORIES : [];
+    return CATEGORIES;
 }
 
 function renderHome() {

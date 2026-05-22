@@ -1,4 +1,4 @@
-const CATEGORIES = ["开发日志", "技术文章", "摄影设计", "生活随笔", "水处理"];
+const CATEGORIES = ["开发日志", "技术文章", "生活随笔", "摄影设计", "水处理"];
 const blogData = [
   {
     "id": "post-17",
