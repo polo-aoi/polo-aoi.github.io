@@ -1,5 +1,19 @@
 [
   {
+    "id": "post-20",
+    "title": "我用 Claude 给自己写了一个博客编辑器",
+    "date": "May 22, 2026",
+    "category": "开发日志",
+    "tags": [
+      "Vibe Coding",
+      "Claude",
+      "Blog"
+    ],
+    "cover": "",
+    "desc": "昨天在 Gemini 的建议下下载了 Publii，完全不是我的需求。今天直接用 Claude vibe coding，想要什么自己说，编了一个完全属于自己的博客编辑器。",
+    "draft": false
+  },
+  {
     "id": "post-18",
     "title": "AoiStitcher 2.0 纯原生重构与全新桥式训练器",
     "date": "May 22, 2026",
