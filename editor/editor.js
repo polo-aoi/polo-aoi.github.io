@@ -448,15 +448,24 @@ async function openCategoryManager() {
     document.getElementById('category-modal').style.display = '';
 }
 
+let dragSrcIndex = null;
+
 async function renderCategoryManager() {
     const res = await fetch('/api/categories');
     const cats = await res.json();
     const list = document.getElementById('category-list');
     list.innerHTML = cats.map((c, i) => `
-        <div class="cat-item" id="cat-item-${escAttr(c)}">
-            <div class="cat-order">
-                ${i > 0 ? `<button onclick="moveCategory(${i}, -1)" title="上移">↑</button>` : '<span></span>'}
-                ${i < cats.length - 1 ? `<button onclick="moveCategory(${i}, 1)" title="下移">↓</button>` : '<span></span>'}
+        <div class="cat-item" id="cat-item-${escAttr(c)}"
+             draggable="true"
+             ondragstart="onDragStart(event, ${i})"
+             ondragover="onDragOver(event)"
+             ondragleave="onDragLeave(event)"
+             ondrop="onDrop(event, ${i})"
+             ondragend="onDragEnd(event)">
+            <div class="drag-handle" title="拖拽排序">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="18" x2="16" y2="18"/>
+                </svg>
             </div>
             <span class="cat-name">${esc(c)}</span>
             <div class="cat-actions" id="cat-act-${escAttr(c)}">
@@ -465,6 +474,55 @@ async function renderCategoryManager() {
             </div>
         </div>
     `).join('');
+}
+
+function onDragStart(e, index) {
+    dragSrcIndex = index;
+    e.target.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', '');
+}
+
+function onDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const item = e.currentTarget;
+    if (!item.classList.contains('dragging')) {
+        item.classList.add('drag-over');
+    }
+}
+
+function onDragLeave(e) {
+    e.currentTarget.classList.remove('drag-over');
+}
+
+async function onDrop(e, dropIndex) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+    if (dragSrcIndex === null || dragSrcIndex === dropIndex) return;
+
+    try {
+        const res = await fetch('/api/categories');
+        const cats = await res.json();
+        const [moved] = cats.splice(dragSrcIndex, 1);
+        cats.splice(dropIndex, 0, moved);
+        await fetch('/api/categories/reorder', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ order: cats })
+        });
+        await renderCategoryManager();
+        await loadCategoryDropdown();
+        toast('排序已更新');
+    } catch (e) {
+        toast('排序失败');
+    }
+    dragSrcIndex = null;
+}
+
+function onDragEnd(e) {
+    e.target.classList.remove('dragging');
+    document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('drag-over'));
+    dragSrcIndex = null;
 }
 
 function escAttr(s) { return (s||'').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
@@ -519,20 +577,6 @@ async function deleteCategory(name) {
     const res = await fetch('/api/categories/' + encodeURIComponent(name), { method: 'DELETE' });
     if (!res.ok) { toast('删除失败'); return; }
     toast('分类已删除');
-    await renderCategoryManager();
-    await loadCategoryDropdown();
-}
-
-async function moveCategory(index, direction) {
-    const res = await fetch('/api/categories');
-    const cats = await res.json();
-    const newIdx = index + direction;
-    if (newIdx < 0 || newIdx >= cats.length) return;
-    [cats[index], cats[newIdx]] = [cats[newIdx], cats[index]];
-    await fetch('/api/categories/reorder', {
-        method: 'POST', headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({order: cats})
-    });
     await renderCategoryManager();
     await loadCategoryDropdown();
 }

@@ -432,20 +432,30 @@ body {
 /* ====== Category Manager ====== */
 .category-manage-list { padding: 0 24px; max-height: 300px; overflow-y: auto; }
 .cat-item {
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex; align-items: center; gap: 10px;
     padding: 10px 0; border-bottom: 1px solid var(--border);
+    cursor: default; user-select: none;
+    transition: background 0.15s ease, transform 0.15s ease;
+    border-radius: 8px; padding-left: 8px; padding-right: 8px; margin: 0 -8px;
 }
 .cat-item:last-child { border-bottom: none; }
-.cat-order {
-    display: flex; flex-direction: column; gap: 1px; margin-right: 12px;
+.cat-item.dragging {
+    opacity: 0.4;
+    transform: scale(0.97);
 }
-.cat-order button {
-    border: none; background: none; cursor: pointer;
-    font-size: 10px; color: var(--text-muted); padding: 2px 4px;
-    border-radius: 3px; line-height: 1; transition: all var(--transition);
+.cat-item.drag-over {
+    background: var(--primary-light);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary-glow);
+    border-radius: 8px;
 }
-.cat-order button:hover { background: #f3f4f6; color: var(--text); }
-.cat-order span { width: 20px; height: 16px; }
+.drag-handle {
+    cursor: grab; color: var(--text-muted);
+    display: flex; align-items: center; padding: 4px;
+    border-radius: 4px; transition: all var(--transition);
+}
+.drag-handle:hover { color: var(--primary); background: var(--primary-light); }
+.drag-handle:active { cursor: grabbing; }
 .cat-name { font-size: 14px; font-weight: 500; color: var(--text); flex: 1; }
 .cat-actions { display: flex; gap: 6px; }
 .cat-actions button {
