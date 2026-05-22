@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Editor — ポロ蒼</title>
+    <link rel="stylesheet" href="/editor/editor.css">
+</head>
+<body>
+
+<!-- ====== Sidebar ====== -->
+<nav class="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-avatar"><img src="/images/avatar.jpg" onerror="this.style.display='none'"></div>
+        <div class="brand-text">
+            <div class="brand-name">ポロ蒼</div>
+            <div class="brand-sub">Blog Editor</div>
+        </div>
+    </div>
+    <a class="nav-item active" id="nav-posts" onclick="showListView()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        文章列表
+    </a>
+    <a class="nav-item" id="nav-new" onclick="newPost()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        写新文章
+    </a>
+    <a class="nav-item" id="nav-categories" onclick="openCategoryManager()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+        管理分类
+    </a>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-footer">
+        <a class="nav-item" href="/" target="_blank">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+            预览博客
+        </a>
+    </div>
+</nav>
+
+<!-- ====== Main Area ====== -->
+<main class="main">
+
+    <!-- List View -->
+    <section id="list-view">
+        <div class="list-header">
+            <h2 class="list-title">文章列表</h2>
+            <div class="list-search">
+                <svg class="search-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" placeholder="搜索文章..." oninput="renderList()" id="searchInput">
+            </div>
+        </div>
+        <div class="list-stats" id="list-stats"></div>
+        <div id="post-list" class="post-list"></div>
+    </section>
+
+    <!-- Editor View -->
+    <section id="editor-view" style="display:none;">
+        <div class="editor-top">
+            <button class="ghost-btn" onclick="backToList()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                返回列表
+            </button>
+            <div class="editor-status">
+                <span id="draft-badge" class="pill pill-draft">草稿</span>
+                <span id="published-badge" class="pill pill-live" style="display:none;">已发布</span>
+                <span class="auto-save-dot" id="saveDot" title="已自动保存"></span>
+            </div>
+        </div>
+
+        <div class="editor-head">
+            <input type="text" id="titleInput" class="title-field" placeholder="文章标题">
+            <div class="head-row">
+                <select id="categorySelect" class="category-select"></select>
+                <input type="text" id="tagsInput" class="tags-field" placeholder="标签，逗号分隔（Devlog, Python, Life）">
+                <button class="cover-btn" id="coverBtn" onclick="openCoverPicker()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    <span id="coverLabel">封面</span>
+                </button>
+                <span id="coverHint" class="cover-hint" onclick="setLastImageAsCover()"></span>
+                <span id="coverPreview" class="cover-name"></span>
+            </div>
+        </div>
+
+        <div class="editor-tabs">
+            <button class="tab active" data-tab="edit" onclick="switchTab('edit')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="8 21 3 21 3 16"/><line x1="20" y1="4" x2="3" y2="21"/></svg>
+                Edit
+            </button>
+            <button class="tab" data-tab="preview" onclick="switchTab('preview')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                Preview
+            </button>
+        </div>
+
+        <div class="editor-body" id="edit-pane">
+            <textarea id="editorTextarea" placeholder="开始写 Markdown...&#10;&#10;拖拽图片到这里会自动上传并插入" oninput="onEditorInput()"></textarea>
+        </div>
+
+        <div class="editor-body preview-pane" id="preview-pane" style="display:none;">
+            <div id="previewBody" class="reader-content"></div>
+        </div>
+
+        <div class="editor-footer">
+            <div class="footer-hint" id="footerHint"></div>
+            <div class="footer-actions">
+                <button class="btn-secondary" onclick="savePost(true)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                    保存草稿
+                </button>
+                <button class="btn-primary" onclick="savePost(false)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polyline points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    发布并推送
+                </button>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- ====== Cover Modal ====== -->
+<div id="cover-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-panel">
+        <div class="modal-head">
+            <h3>选择封面</h3>
+            <button class="icon-btn" onclick="closeCoverPicker()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div id="cover-grid" class="cover-grid"></div>
+        <div class="modal-foot">
+            <input type="file" id="coverUploadInput" accept="image/*" onchange="uploadCoverFile(this)" style="display:none;">
+            <button class="btn-upload-cover" onclick="document.getElementById('coverUploadInput').click()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                上传封面
+            </button>
+            <button class="btn-text" onclick="clearCover()">清除封面</button>
+        </div>
+    </div>
+</div>
+
+<!-- ====== Category Manager Modal ====== -->
+<div id="category-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-panel">
+        <div class="modal-head">
+            <h3>管理分类</h3>
+            <button class="icon-btn" onclick="closeCategoryManager()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div id="category-list" class="category-manage-list"></div>
+        <div class="modal-foot">
+            <input type="text" id="newCategoryInput" class="category-new-input" placeholder="新分类名称" onkeydown="if(event.key==='Enter')addCategory()">
+            <button class="btn-upload-cover" onclick="addCategory()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                新建
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ====== Toast ====== -->
+<div id="toast" class="toast"></div>
+
+<!-- ====== Lightbox ====== -->
+<div id="lightbox" class="lightbox" onclick="this.style.display='none'">
+    <img src="" id="lightboxImg">
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="/editor/editor.js"></script>
+</body>
+</html>

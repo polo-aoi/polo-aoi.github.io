@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ポロ蒼 | Polo Aoi</title>
+    <link rel="icon" href="images/avatar.jpg" type="image/jpeg">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="opening-overlay">
+        <div class="opening-wrapper">
+            <span class="opening-char char-1">无</span>
+            <span class="opening-char char-2">限</span>
+            <span class="opening-char char-3">进</span>
+            <span class="opening-char char-4">步</span>
+        </div>
+    </div>
+
+    <div class="main-content-wrapper">
+        <div class="header">
+            <div class="user-wrapper">
+                <div class="user-card">
+                    <img src="images/avatar.jpg" class="avatar" onerror="this.src='https://api.dicebear.com/7.x/notionists/svg?seed=Felix'">
+                    <div class="user-text">
+                        <div class="user-name">ポロ蒼</div>
+                        <div class="user-motto">轮回非循环，乃螺旋；直面熵增，创生负熵。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="search-row">
+                <div class="search-wrapper">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search..." oninput="handleSearch()">
+                    <div class="search-icon"></div>
+                </div>
+            </div>
+            <div id="posts-container"></div>
+        </div>
+    </div>
+
+    <div id="article-reader">
+        <div class="reader-nav">
+            <button class="back-btn" onclick="closeArticle()">Back to Home</button>
+            <span style="font-weight:bold; color:var(--primary);">ポロ蒼</span>
+        </div>
+        <div class="reader-content" id="reader-body"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script src="data.js"></script>
+
+    <script src="script.js"></script>
+</body>
+</html>

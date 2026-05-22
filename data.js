@@ -1,0 +1,183 @@
+const CATEGORIES = ["开发日志", "技术文章", "摄影设计", "生活随笔", "水处理"];
+const blogData = [
+  {
+    "id": "post-17",
+    "title": "AoiStitcher v1.3.1：新增 Windows 与 Intel Mac 支持",
+    "date": "Jan 01, 2026",
+    "tags": [
+      "Release",
+      "Windows",
+      "Mac"
+    ],
+    "cover": "images/v1.3.1_release.jpg",
+    "desc": "应大家要求，v1.3.1 补充了 Windows 和 Intel Mac 版本的安装包，修复了兼容性问题。",
+    "category": "开发日志"
+  },
+  {
+    "id": "post-16",
+    "title": "AoiStitcher v1.3：从能用到好用",
+    "date": "Dec 28, 2025",
+    "tags": [
+      "Devlog",
+      "Python",
+      "Photography",
+      "AI"
+    ],
+    "cover": "images/v1.3.png",
+    "desc": "从‘能用’到‘好用’的跨越。v1.3 带来了全新的磁吸排序逻辑与高精度水印微调面板，让拼接流程真正符合摄影师的直觉...",
+    "category": "开发日志"
+  },
+  {
+    "id": "post-15",
+    "title": "aoi拼图 v1.2：在代码中缝合我的两个世界",
+    "date": "Dec 27, 2025",
+    "tags": [
+      "Devlog",
+      "Python",
+      "Thinking"
+    ],
+    "cover": "",
+    "desc": "从化工厂的臭氧发生器到 MacBook 里的 Python 代码，我利用 AI 协作开发了一款专为摄影师设计的极简拼图工具...",
+    "category": "开发日志"
+  },
+  {
+    "id": "post-14",
+    "title": "网站架构更新日志 v3.0：分治与重构",
+    "date": "Dec 15, 2025",
+    "tags": [
+      "Devlog"
+    ],
+    "cover": "",
+    "desc": "代码世界里有一种哲学叫“关注点分离”。v3.0 版本将单体架构拆解为模块化文件，并引入了 Markdown 渲染引擎...",
+    "category": "开发日志"
+  },
+  {
+    "id": "post-13",
+    "title": "双膜法（UF+RO）水处理系统全流程技术手册",
+    "date": "Dec 15, 2025",
+    "tags": [
+      "水处理"
+    ],
+    "cover": "",
+    "desc": "基于《双膜培训交流》文档的全方位技术整理，涵盖预处理到反渗透的工艺细节、设备参数、运行逻辑及红线警示。",
+    "category": "水处理"
+  },
+  {
+    "id": "post-12",
+    "title": "超滤离线清洗步骤",
+    "date": "Dec 15, 2025",
+    "tags": [
+      "水处理"
+    ],
+    "cover": "",
+    "desc": "25年12月15日，工艺培训记录...",
+    "category": "水处理"
+  },
+  {
+    "id": "post-11",
+    "title": "网站更新日志 v2.3：修复几个体验问题",
+    "date": "Dec 15, 2025",
+    "tags": [
+      "Devlog",
+      "Bugfix"
+    ],
+    "cover": "",
+    "desc": "刚刚上线发现手机端有点问题，还有几个交互逻辑不太顺手，紧急修复了一下...",
+    "category": "开发日志"
+  },
+  {
+    "id": "post-10",
+    "title": "网站架构更新日志 v2.2：禅意与负熵",
+    "date": "Dec 14, 2025",
+    "tags": [
+      "Devlog",
+      "Design"
+    ],
+    "cover": "",
+    "desc": "删繁就简，直面本质。在 v2.2 版本中，我移除了所有冗余的图片装饰，用纯粹的文字动效构建了全新的视觉语言...",
+    "category": "开发日志"
+  },
+  {
+    "id": "post-9",
+    "title": "网站架构更新日志 v2.1：体验进化",
+    "date": "Dec 14, 2025",
+    "tags": [
+      "Devlog"
+    ],
+    "cover": "",
+    "desc": "在 v2.0 数据驱动架构的基础上，进一步完善了核心检索与分类系统，并实装了路由支持...",
+    "category": "开发日志"
+  },
+  {
+    "id": "post-8",
+    "title": "HTML 特殊符号速查表 (详解版)",
+    "date": "Dec 14, 2025",
+    "tags": [
+      "Code",
+      "HTML"
+    ],
+    "cover": "",
+    "desc": "为什么键盘上的符号不能直接用？整理了最常用的 HTML 字符实体与原理解析...",
+    "category": "技术文章"
+  },
+  {
+    "id": "post-7",
+    "title": "新手小白必会的 HTML 标签清单",
+    "date": "Dec 14, 2025",
+    "tags": [
+      "Code",
+      "HTML"
+    ],
+    "cover": "",
+    "desc": "作为新手小白，不需要背下所有标签，掌握这 8 个“生存级”标签就足够走遍天下了...",
+    "category": "技术文章"
+  },
+  {
+    "id": "post-5",
+    "title": "如何利用AI制作个人网站",
+    "date": "Dec 12, 2025",
+    "tags": [
+      "AI",
+      "Code",
+      "Thinking"
+    ],
+    "cover": "",
+    "desc": "不需会很很多操作，只需有想法有灵感，用好AI工具...",
+    "category": "技术文章"
+  },
+  {
+    "id": "post-4",
+    "title": "网站架构更新日志 v2.0",
+    "date": "Dec 12, 2025",
+    "tags": [
+      "Devlog"
+    ],
+    "cover": "images/251212.jpg",
+    "desc": "添加小小的想法，网站变得越来越像那么回事了",
+    "category": "开发日志"
+  },
+  {
+    "id": "post-2",
+    "title": "如何用 VS Code 搭建个人博客",
+    "date": "Dec 10, 2025",
+    "tags": [
+      "Code",
+      "Tutorial"
+    ],
+    "cover": "",
+    "desc": "不需要复杂的服务器，只需要一个 GitHub 账号和 VS Code，你就能拥有属于自己的角落...",
+    "category": "技术文章"
+  },
+  {
+    "id": "post-1",
+    "title": "为什么我选择了极简主义",
+    "date": "Dec 11, 2025",
+    "tags": [
+      "Life",
+      "Thinking"
+    ],
+    "cover": "images/photo1.jpg",
+    "desc": "蓝色是天空的深度，也是大海的静谧。在设计这个网站时，我刻意去掉了多余的边框和装饰...",
+    "category": "生活随笔"
+  }
+];
