@@ -52,11 +52,16 @@ def format_date():
 def git_commit_and_push(message):
     try:
         subprocess.run(['git', 'add', '-A'], cwd=PROJECT_DIR, check=True, capture_output=True)
-        subprocess.run(['git', 'commit', '-m', message], cwd=PROJECT_DIR, check=True, capture_output=True)
+        r = subprocess.run(['git', 'commit', '-m', message], cwd=PROJECT_DIR, capture_output=True)
+        if r.returncode != 0:
+            output = (r.stderr + r.stdout).decode().strip()
+            if 'nothing to commit' in output:
+                return True, ''
+            return False, output
         subprocess.run(['git', 'push', 'origin', 'main'], cwd=PROJECT_DIR, check=True, capture_output=True)
         return True, ''
     except subprocess.CalledProcessError as e:
-        return False, e.stderr.decode()
+        return False, (e.stderr + e.stdout).decode()
 
 
 def compress_image(filepath):
