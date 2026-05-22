@@ -540,3 +540,37 @@ async function moveCategory(index, direction) {
 function closeCategoryManager() {
     document.getElementById('category-modal').style.display = 'none';
 }
+
+// ===== Sync to GitHub =====
+async function syncToGitHub() {
+    const btn = document.getElementById('nav-sync');
+    const label = document.getElementById('sync-label');
+    const origText = label.textContent;
+
+    btn.style.pointerEvents = 'none';
+    label.textContent = '推送中...';
+    btn.classList.add('syncing');
+
+    try {
+        const res = await fetch('/api/publish', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: '同步更新' })
+        });
+        const result = await res.json();
+        if (result.ok) {
+            label.textContent = '已同步 ✓';
+            toast('已推送到 GitHub');
+        } else {
+            label.textContent = '推送失败';
+            toast('推送失败：' + (result.error || '未知错误'));
+        }
+    } catch (e) {
+        label.textContent = '推送失败';
+        toast('推送失败：' + e.message);
+    }
+
+    btn.classList.remove('syncing');
+    btn.style.pointerEvents = '';
+    setTimeout(() => { if (label.textContent !== '推送中...') label.textContent = origText; }, 3000);
+}

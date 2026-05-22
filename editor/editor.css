@@ -82,6 +82,34 @@ body {
     font-weight: 600;
 }
 .sidebar-spacer { flex: 1; }
+
+.nav-sync {
+    border: 1px solid var(--border);
+    margin: 0 4px;
+    border-radius: var(--radius-sm);
+}
+.nav-sync:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+.nav-sync.syncing {
+    pointer-events: none;
+    border-color: #f59e0b;
+    color: #f59e0b;
+    animation: syncPulse 0.8s infinite;
+}
+.nav-sync.syncing svg {
+    animation: spin 1s linear infinite;
+}
+@keyframes syncPulse {
+    0%, 100% { background: rgba(245,158,11,0.04); }
+    50% { background: rgba(245,158,11,0.1); }
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
 .sidebar-footer { border-top: 1px solid var(--border); padding-top: 12px; }
 
 /* ====== Main Area ====== */
