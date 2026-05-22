@@ -39,6 +39,20 @@ function renderHome() {
         return diff !== 0 ? diff : 0;
     });
 
+    // Featured: latest 3 posts at top
+    if (published.length > 0) {
+        const featured = published.slice(0, 3);
+        const featuredEl = document.createElement('div');
+        featuredEl.className = 'featured-section';
+        featuredEl.innerHTML = `<div class="featured-header">最新文章</div>
+            ${featured.map(post => renderCard(post)).join('')}`;
+        container.appendChild(featuredEl);
+
+        const divider = document.createElement('div');
+        divider.className = 'featured-divider';
+        container.appendChild(divider);
+    }
+
     const cats = getCategories();
 
     cats.forEach(cat => {
