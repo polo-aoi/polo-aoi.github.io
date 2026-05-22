@@ -544,15 +544,21 @@ function closeCategoryManager() {
 }
 
 // ===== Sync to GitHub =====
+let syncInProgress = false;
+let syncResetTimer = null;
+
 async function syncToGitHub() {
+    if (syncInProgress) return;
+    syncInProgress = true;
+    clearTimeout(syncResetTimer);
+
     const btn = document.getElementById('nav-sync');
     const label = document.getElementById('sync-label');
-    const origText = label.textContent;
 
-    btn.style.pointerEvents = 'none';
     label.textContent = '推送中...';
     btn.classList.add('syncing');
 
+    let ok = false;
     try {
         const res = await fetch('/api/publish', {
             method: 'POST',
@@ -563,6 +569,7 @@ async function syncToGitHub() {
         if (result.ok) {
             label.textContent = '已同步 ✓';
             toast('已推送到 GitHub');
+            ok = true;
         } else {
             label.textContent = '推送失败';
             toast('推送失败：' + (result.error || '未知错误'));
@@ -573,6 +580,11 @@ async function syncToGitHub() {
     }
 
     btn.classList.remove('syncing');
-    btn.style.pointerEvents = '';
-    setTimeout(() => { if (label.textContent !== '推送中...') label.textContent = origText; }, 3000);
+    syncInProgress = false;
+
+    if (ok) {
+        syncResetTimer = setTimeout(() => { label.textContent = '同步推送'; }, 3000);
+    } else {
+        syncResetTimer = setTimeout(() => { label.textContent = '同步推送'; }, 5000);
+    }
 }
