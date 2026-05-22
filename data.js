@@ -1,5 +1,17 @@
-const CATEGORIES = ["开发日志", "技术文章", "生活随笔", "摄影设计", "水处理"];
+const CATEGORIES = ["技术文章", "开发日志", "生活随笔", "摄影设计", "水处理"];
 const blogData = [
+  {
+    "id": "post-18",
+    "title": "AoiStitcher 2.0 纯原生重构与全新桥式训练器",
+    "date": "May 22, 2026",
+    "category": "开发日志",
+    "tags": [
+      "Vibe coding"
+    ],
+    "cover": "",
+    "desc": "好久不见！最近在工作与拍摄之余，集中精力推进了两个个人项目的开发。今天将它们正式发布在主页，希望能为你的摄影工作流和魔方日常训练带来一点实质性的便利。",
+    "draft": false
+  },
   {
     "id": "post-17",
     "title": "AoiStitcher v1.3.1：新增 Windows 与 Intel Mac 支持",
