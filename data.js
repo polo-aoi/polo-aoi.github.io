@@ -1,16 +1,6 @@
 const CATEGORIES = ["技术文章", "开发日志", "生活随笔", "摄影设计", "水处理"];
 const blogData = [
   {
-    "id": "post-19",
-    "title": "哈哈哈",
-    "date": "May 22, 2026",
-    "category": "开发日志",
-    "tags": [],
-    "cover": "",
-    "desc": "哈哈哈",
-    "draft": false
-  },
-  {
     "id": "post-18",
     "title": "AoiStitcher 2.0 纯原生重构与全新桥式训练器",
     "date": "May 22, 2026",
