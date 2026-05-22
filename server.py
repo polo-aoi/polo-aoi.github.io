@@ -53,7 +53,7 @@ def git_commit_and_push(message):
     try:
         subprocess.run(['git', 'add', '-A'], cwd=PROJECT_DIR, check=True, capture_output=True)
         subprocess.run(['git', 'commit', '-m', message], cwd=PROJECT_DIR, check=True, capture_output=True)
-        subprocess.run(['git', 'push'], cwd=PROJECT_DIR, check=True, capture_output=True)
+        subprocess.run(['git', 'push', 'origin', 'main'], cwd=PROJECT_DIR, check=True, capture_output=True)
         return True, ''
     except subprocess.CalledProcessError as e:
         return False, e.stderr.decode()
