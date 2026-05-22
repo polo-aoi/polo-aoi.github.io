@@ -83,18 +83,8 @@ body {
 }
 .sidebar-spacer { flex: 1; }
 
-.nav-sync {
-    border: 1px solid var(--border);
-    margin: 0 4px;
-    border-radius: var(--radius-sm);
-}
-.nav-sync:hover {
-    border-color: var(--primary);
-    background: var(--primary-light);
-}
 .nav-sync.syncing {
     pointer-events: none;
-    border-color: #f59e0b;
     color: #f59e0b;
     animation: syncPulse 0.8s infinite;
 }
