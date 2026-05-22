@@ -1,5 +1,15 @@
 [
   {
+    "id": "post-19",
+    "title": "博客编辑器&Vibe Coding",
+    "date": "May 22, 2026",
+    "category": "开发日志",
+    "tags": [],
+    "cover": "",
+    "desc": "昨天心血来潮，想着个人主页已经三四个月没更新了，正好想把最近搞的几个软件更新上去。为了图省事，我下载了一个叫 Publii 的静态 CMS 工具。",
+    "draft": false
+  },
+  {
     "id": "post-18",
     "title": "AoiStitcher 2.0 纯原生重构与全新桥式训练器",
     "date": "May 22, 2026",
