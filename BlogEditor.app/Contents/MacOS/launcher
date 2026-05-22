@@ -1,0 +1,4 @@
+#!/bin/bash
+PROJECT_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
+open "http://localhost:8888/editor"
+exec python3 "$PROJECT_DIR/server.py"
